@@ -430,7 +430,79 @@ function applyLanguage() {
   const footer = document.querySelector("footer");
   if (footer) footer.textContent = e.footer;
 }
+const adminMessages = {
+  hi: {
+    loadError: "जानकारी लोड नहीं हो सकी।",
+    replyError: "जवाब लोड नहीं हो सका।",
+    adminReply: "Admin का जवाब: ",
+    chooseCenter: "पहले सेंटर चुनें।",
+    fillBoth: "शीर्षक और जानकारी दोनों भरें।",
+    saving: "जानकारी सेव हो रही है...",
+    saved: "जमात की जानकारी प्रकाशित हो गई!",
+    deleted: "जमात की जानकारी हटा दी गई।",
+    noRequests: "अभी कोई रिक्वेस्ट नहीं आई है।",
+    nameRequired: "कृपया अपना नाम लिखें",
+    sending: "रिक्वेस्ट भेजी जा रही है...",
+    duplicate: "तुम्हारा नाम पहले ही सबमिट हुआ है।",
+    emailPassword: "ईमेल और पासवर्ड भरें।",
+    loggingIn: "लॉगिन हो रहा है...",
+    noPermission: "आपको Admin की अनुमति नहीं है।",
+    loggedOut: "आप लॉगआउट हो गए हैं।",
+    loginFirst: "पहले Admin Login करें।",
+    publish: "ऐलान प्रकाशित हो रहा है...",
+    timeRequired: "अज़ान और जमात दोनों का समय भरें।",
+    timeSaving: "समय सेव हो रहा है..."
+  },
+  ur: {
+    loadError: "معلومات لوڈ نہیں ہو سکیں۔",
+    replyError: "جواب لوڈ نہیں ہو سکا۔",
+    adminReply: "ایڈمن کا جواب: ",
+    chooseCenter: "پہلے مرکز منتخب کریں۔",
+    fillBoth: "عنوان اور معلومات دونوں درج کریں۔",
+    saving: "معلومات محفوظ ہو رہی ہیں...",
+    saved: "جماعت کی معلومات شائع ہو گئی!",
+    deleted: "جماعت کی معلومات حذف کر دی گئی۔",
+    noRequests: "ابھی کوئی درخواست نہیں آئی۔",
+    nameRequired: "براہ کرم اپنا نام لکھیں",
+    sending: "درخواست بھیجی جا رہی ہے...",
+    duplicate: "آپ کا نام پہلے ہی جمع ہو چکا ہے۔",
+    emailPassword: "ای میل اور پاس ورڈ درج کریں۔",
+    loggingIn: "لاگ اِن ہو رہا ہے...",
+    noPermission: "آپ کو ایڈمن کی اجازت نہیں ہے۔",
+    loggedOut: "آپ لاگ آؤٹ ہو گئے ہیں۔",
+    loginFirst: "پہلے ایڈمن لاگ اِن کریں۔",
+    publish: "اعلان شائع ہو رہا ہے...",
+    timeRequired: "اذان اور جماعت دونوں کے اوقات درج کریں۔",
+    timeSaving: "وقت محفوظ ہو رہا ہے..."
+  },
+  en: {
+    loadError: "Information could not be loaded.",
+    replyError: "Reply could not be loaded.",
+    adminReply: "Admin reply: ",
+    chooseCenter: "Please select a center first.",
+    fillBoth: "Please enter both the title and information.",
+    saving: "Saving information...",
+    saved: "Jamaat information published successfully!",
+    deleted: "Jamaat information deleted.",
+    noRequests: "No requests received yet.",
+    nameRequired: "Please enter your name.",
+    sending: "Sending request...",
+    duplicate: "Your name has already been submitted.",
+    emailPassword: "Please enter email and password.",
+    loggingIn: "Logging in...",
+    noPermission: "You do not have Admin permission.",
+    loggedOut: "You have been logged out.",
+    loginFirst: "Please login as Admin first.",
+    publish: "Publishing announcement...",
+    timeRequired: "Please enter both Azan and Jamaat times.",
+    timeSaving: "Saving prayer times..."
+  }
+};
 
+function adminMsg(key) {
+  const lang = localStorage.getItem("appLanguage") || "hi";
+  return adminMessages[lang][key] || adminMessages.hi[key] || key;
+}
 function toggleLanguageMenu() {
   const choice = prompt(
     "भाषा चुनें:\n1. हिंदी\n2. اردو\n3. English"
