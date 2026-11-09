@@ -830,18 +830,31 @@ async function loadPrayerTimes(centerId) {
 
     const name = document.createElement("span");
     name.className = "prayer-name";
-    name.textContent = prayerLabels[key] || row.prayer_name;
+        const lang = localStorage.getItem("appLanguage") || "hi";
+
+    const name = document.createElement("span");
+    name.className = "prayer-name";
+    name.textContent =
+      (prayerLabels[lang] && prayerLabels[lang][key]) ||
+      row.prayer_name;
 
     const times = document.createElement("div");
     times.className = "prayer-times";
 
     const azan = document.createElement("b");
-    azan.textContent =
-      "अज़ान: " + formatPrayerTime(row.azan_time);
-
     const jamaat = document.createElement("b");
+
+    const labels = {
+      hi: ["अज़ान", "जमात"],
+      ur: ["اذان", "جماعت"],
+      en: ["Azan", "Jamaat"]
+    };
+
+    azan.textContent =
+      labels[lang][0] + ": " + formatPrayerTime(row.azan_time);
+
     jamaat.textContent =
-      "जमात: " + formatPrayerTime(row.jamaat_time);
+      labels[lang][1] + ": " + formatPrayerTime(row.jamaat_time);
 
     times.appendChild(azan);
     times.appendChild(jamaat);
