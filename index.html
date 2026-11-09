@@ -611,6 +611,7 @@ const announcementCenterId = profile.role === "main_admin"
   : profile.center_id;
 
 await loadAnnouncementAdmin(announcementCenterId);
+await loadJamaatAdmin(announcementCenterId);
   status.textContent = "लॉगिन सफल!";
 }
 
