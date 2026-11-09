@@ -68,6 +68,27 @@ footer{text-align:center;padding:25px;color:#718078}
   <div id="adminPanel" style="display:none">
     <h3>Admin Panel</h3>
     <p id="adminWelcome"></p>
+<div id="prayerAdmin" style="margin-top:15px">
+  <h3>🕋 नमाज़ का समय बदलें</h3>
+
+  <select id="editPrayer">
+    <option value="fajr">फज्र</option>
+    <option value="dhuhr">ज़ुहर</option>
+    <option value="asr">असर</option>
+    <option value="maghrib">मगरिब</option>
+    <option value="isha">ईशा</option>
+    <option value="juma">जुमा</option>
+  </select>
+
+  <label>अज़ान का समय</label>
+  <input id="editAzan" type="time">
+
+  <label>जमात का समय</label>
+  <input id="editJamaat" type="time">
+
+  <button onclick="savePrayerTime()">समय सेव करें</button>
+  <p id="prayerSaveStatus" class="status"></p>
+</div>
   </div>
 </section>
 <section class="card">
