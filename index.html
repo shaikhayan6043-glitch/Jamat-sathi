@@ -659,7 +659,7 @@ async function loadJamaatAdminInfo(centerId) {
     .maybeSingle();
 
   if (error) {
-    status.textContent = "जानकारी लोड नहीं हुई: " + error.message;
+    status.textContent = adminMsg("loadError") + " " + error.message;
     return;
   }
 
