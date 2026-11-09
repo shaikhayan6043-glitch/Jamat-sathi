@@ -558,9 +558,13 @@ async function joinJamaat() {
     });
 
   if (error) {
+  if (error.code === "23505") {
+    result.textContent = "तुम्हारा नाम पहले ही सबमिट हुआ है।";
+  } else {
     result.textContent = "समस्या: " + error.message;
-    return;
   }
+  return;
+}
 
   result.textContent = "आपकी रिक्वेस्ट सफलतापूर्वक भेज दी गई!";
   document.getElementById("person").value = "";
