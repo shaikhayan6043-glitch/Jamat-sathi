@@ -59,6 +59,18 @@ footer{text-align:center;padding:25px;color:#718078}
 </section>
 
 <section class="card">
+  <h2>🔐 Admin Login</h2>
+  <input id="adminEmail" type="email" placeholder="Admin Email">
+  <input id="adminPassword" type="password" placeholder="Password">
+  <button onclick="adminLogin()">लॉगिन करें</button>
+  <button id="adminLogoutButton" onclick="adminLogout()" style="display:none">लॉगआउट</button>
+  <p id="adminStatus" class="status"></p>
+  <div id="adminPanel" style="display:none">
+    <h3>Admin Panel</h3>
+    <p id="adminWelcome"></p>
+  </div>
+</section>
+<section class="card">
 <h2>📢 ऐलान और घोषणाएँ</h2>
 <div class="notice">
 <b>JAMAT SATHI में आपका स्वागत है!</b>
@@ -284,6 +296,56 @@ async function joinJamaat() {
   document.getElementById("person").value = "";
 }
 
+async function adminLogin() {
+  const email = document.getElementById("adminEmail").value.trim();
+  const password = document.getElementById("adminPassword").value;
+  const status = document.getElementById("adminStatus");
+
+  if (!email || !password) {
+    status.textContent = "ईमेल और पासवर्ड भरें।";
+    return;
+  }
+
+  status.textContent = "लॉगिन हो रहा है...";
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    status.textContent = "लॉगिन समस्या: " + error.message;
+    return;
+  }
+
+  const { data: profile, error: profileError } = await supabaseClient
+    .from("profiles")
+    .select("full_name, role, center_id")
+    .eq("id", data.user.id)
+    .single();
+
+  if (profileError || !profile ||
+      !["main_admin", "center_admin"].includes(profile.role)) {
+    await supabaseClient.auth.signOut();
+    status.textContent = "आपको Admin की अनुमति नहीं है।";
+    return;
+  }
+
+  document.getElementById("adminPanel").style.display = "block";
+  document.getElementById("adminWelcome").textContent =
+    "स्वागत है " + profile.full_name + " (" + profile.role + ")";
+
+  document.getElementById("adminLogoutButton").style.display = "block";
+  status.textContent = "लॉगिन सफल!";
+}
+
+async function adminLogout() {
+  await supabaseClient.auth.signOut();
+
+  document.getElementById("adminPanel").style.display = "none";
+  document.getElementById("adminLogoutButton").style.display = "none";
+  document.getElementById("adminStatus").textContent = "आप लॉगआउट हो गए हैं।";
+}
 loadCenters();
 </script>
 
