@@ -1017,7 +1017,8 @@ async function joinJamaat() {
   const result = document.getElementById("result");
 
   if (!centerId) {
-    alert("पहले अपना सेंटर चुनें");
+    const lang = localStorage.getItem("appLanguage") || "hi";
+alert(translations[lang].chooseCenter);
     return;
   }
 
