@@ -230,6 +230,28 @@ async function loadJamaatInfo(centerId) {
 
   form.style.display = "block";
 }
+async function loadJamaatReply(centerId) {
+  const replyBox = document.getElementById("jamaatReply");
+  replyBox.textContent = "";
+
+  const token = localStorage.getItem("jamaatReplyToken_" + centerId);
+
+  if (!token) return;
+
+  const { data, error } = await supabaseClient.rpc(
+    "get_jamaat_reply",
+    { p_access_token: token }
+  );
+
+  if (error) {
+    replyBox.textContent = "जवाब लोड नहीं हो सका।";
+    return;
+  }
+
+  if (data) {
+    replyBox.textContent = "Admin का जवाब: " + data;
+  }
+}
 async function loadJamaatAdminInfo(centerId) {
   const title = document.getElementById("jamaatTitle");
   const message = document.getElementById("jamaatMessage");
@@ -580,6 +602,7 @@ async function loadCenters() {
     await loadPrayerTimes(savedCenter);
 await loadAnnouncements(savedCenter);
 await loadJamaatInfo(savedCenter);
+await loadJamaatReply(savedCenter);
     centerStatus.textContent = "आपका सेंटर चुना हुआ है।";
   } else {
     centerStatus.textContent = "कृपया अपना सेंटर चुनें।";
@@ -602,6 +625,7 @@ centerSelect.addEventListener("change", async function() {
   await loadPrayerTimes(centerId);
 await loadAnnouncements(centerId);
 await loadJamaatInfo(centerId);
+await loadJamaatReply(centerId);
 });
 
 async function loadPrayerTimes(centerId) {
