@@ -491,6 +491,7 @@ async function loadCenters() {
     centerSelect.value = savedCenter;
     await loadPrayerTimes(savedCenter);
 await loadAnnouncements(savedCenter);
+await loadJamaatInfo(savedCenter);
     centerStatus.textContent = "आपका सेंटर चुना हुआ है।";
   } else {
     centerStatus.textContent = "कृपया अपना सेंटर चुनें।";
