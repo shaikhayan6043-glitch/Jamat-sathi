@@ -114,6 +114,22 @@ footer{text-align:center;padding:25px;color:#718078}
   <h3>📝 पुराने ऐलान बदलें या हटाएँ</h3>
   <p class="status">ऐलान लोड हो रहे हैं...</p>
 </div>
+<div style="margin-top:20px">
+  <h3>🤝 जमात की जानकारी प्रकाशित करें</h3>
+
+  <input id="jamaatTitle" placeholder="जमात का शीर्षक">
+
+  <textarea id="jamaatMessage"
+    placeholder="जमात कब और कहाँ जाना है, पूरी जानकारी लिखें"
+    rows="4"
+    style="width:100%;padding:10px">
+  </textarea>
+
+  <button onclick="saveJamaatInfo()">जमात की जानकारी सेव करें</button>
+  <button onclick="deleteJamaatInfo()" style="background:#b42318">जमात बंद करें</button>
+
+  <p id="jamaatInfoStatus"></p>
+</div>
 <div id="jamaatAdminList" style="margin-top:20px">
   <h3>🤝 जमात में चलने की रिक्वेस्ट</h3>
   <p class="status">रिक्वेस्ट लोड हो रही हैं...</p>
@@ -171,6 +187,47 @@ function formatPrayerTime(value) {
     ":" + minute + " " + suffix;
 }
 
+async function loadJamaatInfo(centerId) {
+  const info = document.getElementById("jamaatInfo");
+  const form = document.getElementById("jamaatForm");
+
+  form.style.display = "none";
+
+  if (!centerId) {
+    info.textContent = "पहले अपना सेंटर चुनें।";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("jamaat_info")
+    .select("title,message,active")
+    .eq("center_id", centerId)
+    .eq("active", true)
+    .maybeSingle();
+
+  if (error) {
+    info.textContent = "जानकारी लोड नहीं हो सकी।";
+    return;
+  }
+
+  if (!data) {
+    info.textContent = "अभी कोई जमात तय नहीं है।";
+    return;
+  }
+
+  info.innerHTML = "";
+
+  const heading = document.createElement("h3");
+  heading.textContent = data.title;
+
+  const message = document.createElement("p");
+  message.textContent = data.message;
+
+  info.appendChild(heading);
+  info.appendChild(message);
+
+  form.style.display = "block";
+}
 async function loadJamaatAdmin(centerId) {
   const box = document.getElementById("jamaatAdminList");
 
