@@ -556,7 +556,8 @@ async function loadJamaatAdminInfo(centerId) {
   } else {
     title.value = "";
     message.value = "";
-    status.textContent = "अभी कोई जानकारी प्रकाशित नहीं है।";
+    const lang = localStorage.getItem("appLanguage") || "hi";
+status.textContent = translations[lang].noJamaatInfo;
   }
 }
 async function saveJamaatInfo() {
