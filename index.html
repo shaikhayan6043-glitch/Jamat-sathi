@@ -837,7 +837,7 @@ async function loadAnnouncementAdmin(centerId) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    box.textContent = "समस्या: " + error.message;
+    box.textContent = adminMsg("loadError") + " " + error.message;
     return;
   }
 
@@ -866,7 +866,7 @@ box.textContent = translations[lang].noAnnouncement;
 
     editButton.onclick = async () => {
       if (!title.value.trim() || !message.value.trim()) {
-        alert("शीर्षक और जानकारी दोनों भरें।");
+       alert(adminMsg("fillBoth"));
         return;
       }
 
@@ -893,7 +893,7 @@ box.textContent = translations[lang].noAnnouncement;
     deleteButton.style.background = "#b42318";
 
     deleteButton.onclick = async () => {
-      if (!confirm("क्या आप यह ऐलान हटाना चाहते हैं?")) return;
+      if (!confirm(adminMsg("chooseCenter"))) return;
 
       const { error } = await supabaseClient
         .from("announcements")
@@ -901,7 +901,7 @@ box.textContent = translations[lang].noAnnouncement;
         .eq("id", item.id);
 
       if (error) {
-        alert("समस्या: " + error.message);
+        alert(adminMsg("loadError") + " " + error.message);
         return;
       }
 
