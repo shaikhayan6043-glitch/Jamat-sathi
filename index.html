@@ -171,6 +171,23 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+function toggleSettings() {
+  const menu = document.getElementById("settingsMenu");
+  menu.style.display =
+    menu.style.display === "none" ? "block" : "none";
+}
+
+function showAdminLogin() {
+  document.getElementById("adminSection").style.display = "block";
+  document.getElementById("settingsMenu").style.display = "none";
+  document.getElementById("adminSection").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+function toggleLanguageMenu() {
+  alert("भाषा बदलने का विकल्प जल्द आएगा।");
+}
 
 const centerSelect = document.getElementById("center");
 const centerStatus = document.getElementById("centerStatus");
