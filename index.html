@@ -311,7 +311,12 @@ function applyLanguage() {
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === "ur" ? "rtl" : "ltr";
 
-  document.querySelector("header p").textContent = t.tagline;
+  const setText = (selector, value) => {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = value;
+  };
+
+  setText("header p", t.tagline);
 
   const menuButtons = document.querySelectorAll("#settingsMenu button");
   menuButtons[0].textContent = t.admin;
@@ -323,15 +328,51 @@ function applyLanguage() {
   headings[2].textContent = t.jamaat;
   headings[3].textContent = t.announcements;
 
-  document.querySelector("#centerStatus").textContent = t.centerLoading;
-  document.querySelector("#prayers .status").textContent = t.chooseCenter;
+  setText("#centerStatus", t.centerLoading);
+  setText("#prayers .status", t.chooseCenter);
 
-  document.querySelector("#jamaatForm label").textContent = t.fullName;
+  setText("#jamaatForm label", t.fullName);
   document.querySelector("#person").placeholder = t.namePlaceholder;
   document.querySelector("#jamaatForm button").textContent = t.submit;
 
-  document.querySelector("#adminSection h2").textContent = t.admin;
-  document.querySelector("#adminSection button").textContent = t.login;
+  setText("#adminSection h2", t.admin);
+  setText("#adminSection button", t.login);
+  setText("#adminLogoutButton", t.logout);
+
+  const adminHeadings = document.querySelectorAll("#adminPanel h3");
+  adminHeadings[0].textContent = t.adminPanel;
+  adminHeadings[1].textContent = t.prayerAdmin;
+  adminHeadings[2].textContent = t.newAnnouncement;
+  adminHeadings[3].textContent = t.oldAnnouncements;
+  adminHeadings[4].textContent = t.jamaatPublish;
+  adminHeadings[5].textContent = t.jamaatRequests;
+
+  const prayerOptions = document.querySelectorAll("#editPrayer option");
+  prayerOptions[0].textContent = t.fajr;
+  prayerOptions[1].textContent = t.dhuhr;
+  prayerOptions[2].textContent = t.asr;
+  prayerOptions[3].textContent = t.maghrib;
+  prayerOptions[4].textContent = t.isha;
+  prayerOptions[5].textContent = t.juma;
+
+  const prayerLabels = document.querySelectorAll("#prayerAdmin label");
+  prayerLabels[0].textContent = t.azanTime;
+  prayerLabels[1].textContent = t.jamaatTime;
+
+  setText("#prayerAdmin button", t.saveTime);
+
+  document.querySelector("#announcementTitle").placeholder = t.announcementTitle;
+  document.querySelector("#announcementMessage").placeholder = t.announcementMessage;
+  setText("#adminPanel button[onclick='saveAnnouncement()']", t.publishAnnouncement);
+
+  document.querySelector("#jamaatTitle").placeholder = t.jamaatTitle;
+  document.querySelector("#jamaatMessage").placeholder = t.jamaatMessage;
+
+  const jamaatButtons = document.querySelectorAll(
+    "#adminPanel button[onclick='saveJamaatInfo()'], #adminPanel button[onclick='deleteJamaatInfo()']"
+  );
+  jamaatButtons[0].textContent = t.saveJamaatInfo;
+  jamaatButtons[1].textContent = t.closeJamaat;
 }
 
 function toggleLanguageMenu() {
