@@ -487,7 +487,8 @@ async function loadJamaatInfo(centerId) {
   }
 
   if (!data) {
-    info.textContent = "अभी कोई जमात तय नहीं है।";
+    const lang = localStorage.getItem("appLanguage") || "hi";
+info.textContent = translations[lang].noJamaat;
     return;
   }
 
