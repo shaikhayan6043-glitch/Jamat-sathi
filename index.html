@@ -811,7 +811,8 @@ async function loadAnnouncements(centerId) {
   const box = document.getElementById("announcementsList");
 
   if (!centerId) {
-    box.innerHTML = '<p class="status">पहले अपना सेंटर चुनें।</p>';
+   const lang = localStorage.getItem("appLanguage") || "hi";
+box.innerHTML = '<p class="status">' + translations[lang].chooseCenter + '</p>';
     return;
   }
 
