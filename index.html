@@ -186,7 +186,20 @@ function showAdminLogin() {
 }
 
 function toggleLanguageMenu() {
-  alert("भाषा बदलने का विकल्प जल्द आएगा।");
+  const choice = prompt(
+    "भाषा चुनें:\n1. हिंदी\n2. اردو\n3. English"
+  );
+
+  if (choice === "1") {
+    localStorage.setItem("appLanguage", "hi");
+    alert("हिंदी चुनी गई।");
+  } else if (choice === "2") {
+    localStorage.setItem("appLanguage", "ur");
+    alert("اردو منتخب کی گئی۔");
+  } else if (choice === "3") {
+    localStorage.setItem("appLanguage", "en");
+    alert("English selected.");
+  }
 }
 
 const centerSelect = document.getElementById("center");
