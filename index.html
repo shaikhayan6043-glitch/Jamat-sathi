@@ -681,16 +681,16 @@ async function saveJamaatInfo() {
   const status = document.getElementById("jamaatInfoStatus");
 
   if (!centerId) {
-    status.textContent = "पहले सेंटर चुनें।";
+   status.textContent = adminMsg("chooseCenter");
     return;
   }
 
   if (!title || !message) {
-    status.textContent = "शीर्षक और जानकारी दोनों भरें।";
+    status.textContent = adminMsg("fillBoth");
     return;
   }
 
-  status.textContent = "जानकारी सेव हो रही है...";
+  status.textContent = adminMsg("saving");
 
   const { error } = await supabaseClient
     .from("jamaat_info")
@@ -702,11 +702,11 @@ async function saveJamaatInfo() {
     }, { onConflict: "center_id" });
 
   if (error) {
-    status.textContent = "समस्या: " + error.message;
+    status.textContent = adminMsg("loadError") + " " + error.message;
     return;
   }
 
-  status.textContent = "जमात की जानकारी प्रकाशित हो गई!";
+  status.textContent = adminMsg("saved");
   await loadJamaatInfo(centerId);
 }
 
@@ -715,7 +715,7 @@ async function deleteJamaatInfo() {
   const status = document.getElementById("jamaatInfoStatus");
 
   if (!centerId) {
-    status.textContent = "पहले सेंटर चुनें।";
+    status.textContent = adminMsg("chooseCenter");
     return;
   }
 
@@ -725,7 +725,7 @@ async function deleteJamaatInfo() {
     .eq("center_id", centerId);
 
   if (error) {
-    status.textContent = "समस्या: " + error.message;
+    status.textContent = adminMsg("loadError") + " " + error.message;
     return;
   }
 
@@ -742,7 +742,7 @@ async function loadJamaatAdmin(centerId) {
   box.innerHTML = "<h3>🤝 जमात में चलने की रिक्वेस्ट</h3>";
 
   if (!centerId) {
-    box.textContent = "पहले सेंटर चुनें।";
+    box.textContent = adminMsg("chooseCenter");
     return;
   }
 
@@ -753,7 +753,7 @@ async function loadJamaatAdmin(centerId) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    box.textContent = "समस्या: " + error.message;
+    box.textContent = adminMsg("loadError") + " " + error.message;
     return;
   }
 
@@ -787,7 +787,7 @@ box.textContent = translations[lang].noRequests;
         .eq("id", item.id);
 
       if (error) {
-        alert("समस्या: " + error.message);
+        alert(adminMsg("loadError") + " " + error.message);
         return;
       }
 
