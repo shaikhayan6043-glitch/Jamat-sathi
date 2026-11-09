@@ -818,7 +818,8 @@ async function loadAnnouncements(centerId) {
   box.innerHTML = "";
 
   if (!data || data.length === 0) {
-    box.textContent = "अभी कोई नया ऐलान नहीं है।";
+    const lang = localStorage.getItem("appLanguage") || "hi";
+box.textContent = translations[lang].noNewAnnouncement;
     return;
   }
 
