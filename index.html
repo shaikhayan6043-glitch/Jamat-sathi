@@ -720,7 +720,8 @@ async function loadAnnouncementAdmin(centerId) {
   }
 
   if (!data || data.length === 0) {
-    box.textContent = "अभी कोई ऐलान नहीं है।";
+    const lang = localStorage.getItem("appLanguage") || "hi";
+box.textContent = translations[lang].noAnnouncement;
     return;
   }
 
