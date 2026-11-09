@@ -250,17 +250,37 @@ async function loadPrayerTimes(centerId) {
   });
 }
 
-function joinJamaat() {
+async function joinJamaat() {
   const name = document.getElementById("person").value.trim();
+  const centerId = centerSelect.value;
+  const result = document.getElementById("result");
+
+  if (!centerId) {
+    alert("पहले अपना सेंटर चुनें");
+    return;
+  }
 
   if (!name) {
     alert("कृपया अपना नाम लिखें");
     return;
   }
 
-  document.getElementById("result").innerText =
-    "धन्यवाद " + name + "! यह सुविधा अभी तैयार की जा रही है।";
+  result.textContent = "रिक्वेस्ट भेजी जा रही है...";
 
+  const { error } = await supabaseClient
+    .from("jamaat_requests")
+    .insert({
+      center_id: centerId,
+      user_id: null,
+      person_name: name
+    });
+
+  if (error) {
+    result.textContent = "समस्या: " + error.message;
+    return;
+  }
+
+  result.textContent = "आपकी रिक्वेस्ट सफलतापूर्वक भेज दी गई!";
   document.getElementById("person").value = "";
 }
 
