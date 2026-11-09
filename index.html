@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -16,40 +15,39 @@ main{padding:16px;max-width:600px;margin:auto}
 h2{font-size:19px;margin:0 0 14px}
 select,input,button{width:100%;padding:13px;border-radius:9px;border:1px solid #ccd9d1;font-size:16px;margin-top:8px}
 button{background:#087653;color:white;border:0;font-weight:bold}
-.prayer{display:flex;justify-content:space-between;padding:12px 3px;border-bottom:1px solid #e8eee9}
-.prayer:last-child{border:0}
+.prayer{display:flex;justify-content:space-between;gap:8px;padding:13px 3px;border-bottom:1px solid #e8eee9}
+.prayer-name{font-size:17px;font-weight:bold}
+.prayer-times{display:flex;flex-direction:column;text-align:right;gap:4px}
 .notice{background:#edf7f1;padding:12px;border-radius:10px;margin:9px 0}
 small{color:#60766b}
+.status{font-size:14px;margin:10px 0;color:#60766b}
+.error{color:#b42318}
 footer{text-align:center;padding:25px;color:#718078}
 </style>
 </head>
 <body>
+
 <header>
 <h1>🕌 JAMAT SATHI</h1>
 <p>आपकी मस्जिद, आपकी जमात</p>
 </header>
 
 <main>
+
 <section class="card">
 <h2>📍 अपना सेंटर चुनें</h2>
 <select id="center">
-<option value="">सेंटर चुनें</option>
-<option>सेंटर 1</option>
-<option>सेंटर 2</option>
-<option>सेंटर 3</option>
+<option value="">सेंटर लोड हो रहे हैं...</option>
 </select>
+<p id="centerStatus" class="status">सेंटर लोड हो रहे हैं...</p>
 </section>
 
 <section class="card">
 <h2>🕋 नमाज़ का समय</h2>
 <div id="prayers">
-<div class="prayer"><span>फज्र</span><b>05:00 AM</b></div>
-<div class="prayer"><span>ज़ुहर</span><b>01:30 PM</b></div>
-<div class="prayer"><span>असर</span><b>05:00 PM</b></div>
-<div class="prayer"><span>मगरिब</span><b>06:30 PM</b></div>
-<div class="prayer"><span>ईशा</span><b>08:30 PM</b></div>
+<p class="status">पहले अपना सेंटर चुनें।</p>
 </div>
-<small>ये केवल डेमो समय हैं। सही समय एडमिन सेट करेगा।</small>
+<small>समय आपके चुने हुए सेंटर के अनुसार दिखेगा।</small>
 </section>
 
 <section class="card">
@@ -57,6 +55,7 @@ footer{text-align:center;padding:25px;color:#718078}
 <input id="person" placeholder="अपना नाम लिखें">
 <button onclick="joinJamaat()">सबमिट करें</button>
 <p id="result"></p>
+<small>यह सुविधा अभी तैयार की जा रही है।</small>
 </section>
 
 <section class="card">
@@ -66,29 +65,13 @@ footer{text-align:center;padding:25px;color:#718078}
 <p>अपने सेंटर की नई घोषणाएँ यहाँ देख सकेंगे।</p>
 </div>
 </section>
+
 </main>
 
 <footer>JAMAT SATHI © 2026</footer>
 
-<script>
-document.getElementById("center").onchange=function(){
-localStorage.setItem("jamatCenter",this.value);
-};
-document.getElementById("center").value=
-localStorage.getItem("jamatCenter") || "";
-
-function joinJamaat(){
-const name=document.getElementById("person").value.trim();
-if(!name){
-alert("कृपया अपना नाम लिखें");
-return;
-}
-document.getElementById("result").innerText=
-"धन्यवाद "+name+"! आपकी जानकारी दर्ज हुई।";
-document.getElementById("person").value="";
-}
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 const SUPABASE_URL = "https://sofxrgpprpnopodsmtkc.supabase.co";
 const SUPABASE_KEY = "sb_publishable_pi_jnHdXZZW_upfuLRWiAA_72QEF6SL";
@@ -97,6 +80,191 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+
+const centerSelect = document.getElementById("center");
+const centerStatus = document.getElementById("centerStatus");
+const prayersBox = document.getElementById("prayers");
+
+const prayerLabels = {
+  fajr: "फज्र",
+  dhuhr: "ज़ुहर",
+  zuhr: "ज़ुहर",
+  asr: "असर",
+  maghrib: "मगरिब",
+  isha: "ईशा",
+  juma: "जुमा"
+};
+
+function formatPrayerTime(value) {
+  if (!value) return "सेट नहीं";
+
+  const parts = value.split(":");
+  let hour = Number(parts[0]);
+  const minute = parts[1] || "00";
+  const suffix = hour >= 12 ? "PM" : "AM";
+
+  hour = hour % 12 || 12;
+
+  return String(hour).padStart(2, "0") +
+    ":" + minute + " " + suffix;
+}
+
+async function loadCenters() {
+  centerStatus.textContent = "सेंटर लोड हो रहे हैं...";
+
+  const { data, error } = await supabaseClient
+    .from("centers")
+    .select("id, name")
+    .order("name");
+
+  if (error) {
+    centerSelect.innerHTML =
+      '<option value="">सेंटर लोड नहीं हुए</option>';
+    centerStatus.textContent =
+      "समस्या: " + error.message;
+    centerStatus.classList.add("error");
+    return;
+  }
+
+  centerSelect.innerHTML =
+    '<option value="">अपना सेंटर चुनें</option>';
+
+  (data || []).forEach(center => {
+    const option = document.createElement("option");
+    option.value = center.id;
+    option.textContent = center.name;
+    centerSelect.appendChild(option);
+  });
+
+  if (!data || data.length === 0) {
+    centerStatus.textContent =
+      "अभी कोई सेंटर उपलब्ध नहीं है।";
+    return;
+  }
+
+  const savedCenter = localStorage.getItem("jamatCenter");
+
+  if (savedCenter && data.some(c => c.id === savedCenter)) {
+    centerSelect.value = savedCenter;
+    await loadPrayerTimes(savedCenter);
+    centerStatus.textContent = "आपका सेंटर चुना हुआ है।";
+  } else {
+    centerStatus.textContent = "कृपया अपना सेंटर चुनें।";
+  }
+}
+
+centerSelect.addEventListener("change", async function() {
+  const centerId = this.value;
+
+  if (!centerId) {
+    localStorage.removeItem("jamatCenter");
+    prayersBox.innerHTML =
+      '<p class="status">पहले अपना सेंटर चुनें।</p>';
+    return;
+  }
+
+  localStorage.setItem("jamatCenter", centerId);
+  centerStatus.textContent = "सेंटर चुना गया।";
+
+  await loadPrayerTimes(centerId);
+});
+
+async function loadPrayerTimes(centerId) {
+  prayersBox.innerHTML =
+    '<p class="status">नमाज़ के समय लोड हो रहे हैं...</p>';
+
+  const { data, error } = await supabaseClient
+    .from("prayer_times")
+    .select("prayer_name, azan_time, jamaat_time")
+    .eq("center_id", centerId);
+
+  if (error) {
+    prayersBox.innerHTML =
+      '<p class="status error">समय लोड नहीं हुए: ' +
+      error.message + '</p>';
+    return;
+  }
+
+  const isFriday = new Date().getDay() === 5;
+
+  const rows = (data || []).filter(row => {
+    const name = String(row.prayer_name || "")
+      .trim().toLowerCase();
+
+    if (isFriday) {
+      return name !== "dhuhr" && name !== "zuhr";
+    }
+
+    return name !== "juma";
+  });
+
+  const order = [
+    "fajr", "dhuhr", "zuhr",
+    "asr", "maghrib", "isha", "juma"
+  ];
+
+  rows.sort((a, b) => {
+    const aName = String(a.prayer_name).trim().toLowerCase();
+    const bName = String(b.prayer_name).trim().toLowerCase();
+
+    return order.indexOf(aName) - order.indexOf(bName);
+  });
+
+  if (rows.length === 0) {
+    prayersBox.innerHTML =
+      '<p class="status">इस सेंटर के समय अभी उपलब्ध नहीं हैं।</p>';
+    return;
+  }
+
+  prayersBox.innerHTML = "";
+
+  rows.forEach(row => {
+    const key = String(row.prayer_name)
+      .trim().toLowerCase();
+
+    const item = document.createElement("div");
+    item.className = "prayer";
+
+    const name = document.createElement("span");
+    name.className = "prayer-name";
+    name.textContent = prayerLabels[key] || row.prayer_name;
+
+    const times = document.createElement("div");
+    times.className = "prayer-times";
+
+    const azan = document.createElement("b");
+    azan.textContent =
+      "अज़ान: " + formatPrayerTime(row.azan_time);
+
+    const jamaat = document.createElement("b");
+    jamaat.textContent =
+      "जमात: " + formatPrayerTime(row.jamaat_time);
+
+    times.appendChild(azan);
+    times.appendChild(jamaat);
+
+    item.appendChild(name);
+    item.appendChild(times);
+
+    prayersBox.appendChild(item);
+  });
+}
+
+function joinJamaat() {
+  const name = document.getElementById("person").value.trim();
+
+  if (!name) {
+    alert("कृपया अपना नाम लिखें");
+    return;
+  }
+
+  document.getElementById("result").innerText =
+    "धन्यवाद " + name + "! यह सुविधा अभी तैयार की जा रही है।";
+
+  document.getElementById("person").value = "";
+}
+
+loadCenters();
 </script>
 
 </body>
