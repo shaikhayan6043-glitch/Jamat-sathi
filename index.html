@@ -320,7 +320,16 @@ const prayerLabels = {
 };
 
 function formatPrayerTime(value) {
-  if (!value) return "सेट नहीं";
+  const lang = localStorage.getItem("appLanguage") || "hi";
+
+  if (!value) {
+    const missing = {
+      hi: "सेट नहीं",
+      ur: "مقرر نہیں",
+      en: "Not Set"
+    };
+    return missing[lang] || missing.hi;
+  }
 
   const parts = value.split(":");
   let hour = Number(parts[0]);
