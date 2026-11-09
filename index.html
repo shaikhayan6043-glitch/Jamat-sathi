@@ -89,6 +89,21 @@ footer{text-align:center;padding:25px;color:#718078}
   <button onclick="savePrayerTime()">समय सेव करें</button>
   <p id="prayerSaveStatus" class="status"></p>
 </div>
+<div style="margin-top:20px">
+  <h3>📢 नया ऐलान जोड़ें</h3>
+
+  <input id="announcementTitle" placeholder="ऐलान का शीर्षक">
+
+  <textarea id="announcementMessage"
+    placeholder="ऐलान की पूरी जानकारी लिखें"
+    rows="4"
+    style="width:100%;padding:13px;margin-top:8px;border-radius:9px">
+  </textarea>
+
+  <button onclick="saveAnnouncement()">ऐलान प्रकाशित करें</button>
+
+  <p id="announcementStatus" class="status"></p>
+</div>
   </div>
 </section>
 <section class="card">
@@ -366,6 +381,65 @@ async function adminLogout() {
   document.getElementById("adminPanel").style.display = "none";
   document.getElementById("adminLogoutButton").style.display = "none";
   document.getElementById("adminStatus").textContent = "आप लॉगआउट हो गए हैं।";
+}
+async function saveAnnouncement() {
+  const status = document.getElementById("announcementStatus");
+  const title = document.getElementById("announcementTitle").value.trim();
+  const message = document.getElementById("announcementMessage").value.trim();
+
+  if (!title || !message) {
+    status.textContent = "शीर्षक और जानकारी दोनों भरें।";
+    return;
+  }
+
+  status.textContent = "ऐलान प्रकाशित हो रहा है...";
+
+  const { data: userData, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !userData.user) {
+    status.textContent = "पहले Admin Login करें।";
+    return;
+  }
+
+  const { data: profile, error: profileError } =
+    await supabaseClient
+      .from("profiles")
+      .select("role, center_id")
+      .eq("id", userData.user.id)
+      .single();
+
+  if (profileError || !profile ||
+      !["main_admin", "center_admin"].includes(profile.role)) {
+    status.textContent = "Admin की अनुमति नहीं मिली।";
+    return;
+  }
+
+  const centerId = profile.role === "main_admin"
+    ? centerSelect.value
+    : profile.center_id;
+
+  if (!centerId) {
+    status.textContent = "पहले सेंटर चुनें।";
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("announcements")
+    .insert({
+      center_id: centerId,
+      title: title,
+      message: message
+    });
+
+  if (error) {
+    status.textContent = "समस्या: " + error.message;
+    return;
+  }
+
+  status.textContent = "ऐलान सफलतापूर्वक प्रकाशित हो गया!";
+  document.getElementById("announcementTitle").value = "";
+  document.getElementById("announcementMessage").value = "";
 }
 async function savePrayerTime() {
   const status = document.getElementById("prayerSaveStatus");
