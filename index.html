@@ -185,6 +185,84 @@ function showAdminLogin() {
   });
 }
 
+const translations = {
+  hi: {
+    tagline: "आपकी मस्जिद, आपकी जमात",
+    admin: "🔐 Admin Login",
+    language: "🌐 भाषा बदलें",
+    center: "📍 अपना सेंटर चुनें",
+    centerLoading: "सेंटर लोड हो रहे हैं...",
+    prayer: "🕋 नमाज़ का समय",
+    chooseCenter: "पहले अपना सेंटर चुनें।",
+    jamaat: "🤝 जमात में चलना है",
+    announcements: "📢 ऐलान और घोषणाएँ",
+    fullName: "पूरा नाम",
+    namePlaceholder: "अपना पूरा नाम लिखें",
+    submit: "सबमिट करें",
+    login: "लॉगिन करें"
+  },
+  ur: {
+    tagline: "آپ کی مسجد، آپ کی جماعت",
+    admin: "🔐 ایڈمن لاگ ان",
+    language: "🌐 زبان تبدیل کریں",
+    center: "📍 اپنا مرکز منتخب کریں",
+    centerLoading: "مرکز لوڈ ہو رہے ہیں...",
+    prayer: "🕋 نماز کے اوقات",
+    chooseCenter: "پہلے اپنا مرکز منتخب کریں۔",
+    jamaat: "🤝 جماعت میں شامل ہوں",
+    announcements: "📢 اعلانات",
+    fullName: "پورا نام",
+    namePlaceholder: "اپنا پورا نام لکھیں",
+    submit: "جمع کریں",
+    login: "لاگ ان کریں"
+  },
+  en: {
+    tagline: "Your Mosque, Your Jamaat",
+    admin: "🔐 Admin Login",
+    language: "🌐 Change Language",
+    center: "📍 Select Your Center",
+    centerLoading: "Loading centers...",
+    prayer: "🕋 Prayer Timings",
+    chooseCenter: "Please select your center first.",
+    jamaat: "🤝 Join Jamaat",
+    announcements: "📢 Announcements",
+    fullName: "Full Name",
+    namePlaceholder: "Enter your full name",
+    submit: "Submit",
+    login: "Login"
+  }
+};
+
+function applyLanguage() {
+  const lang = localStorage.getItem("appLanguage") || "hi";
+  const t = translations[lang] || translations.hi;
+
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "ur" ? "rtl" : "ltr";
+
+  document.querySelector("header p").textContent = t.tagline;
+
+  const menuButtons = document.querySelectorAll("#settingsMenu button");
+  menuButtons[0].textContent = t.admin;
+  menuButtons[1].textContent = t.language;
+
+  const headings = document.querySelectorAll("main .card h2");
+  headings[0].textContent = t.center;
+  headings[1].textContent = t.prayer;
+  headings[2].textContent = t.jamaat;
+  headings[3].textContent = t.announcements;
+
+  document.querySelector("#centerStatus").textContent = t.centerLoading;
+  document.querySelector("#prayers .status").textContent = t.chooseCenter;
+
+  document.querySelector("#jamaatForm label").textContent = t.fullName;
+  document.querySelector("#person").placeholder = t.namePlaceholder;
+  document.querySelector("#jamaatForm button").textContent = t.submit;
+
+  document.querySelector("#adminSection h2").textContent = t.admin;
+  document.querySelector("#adminSection button").textContent = t.login;
+}
+
 function toggleLanguageMenu() {
   const choice = prompt(
     "भाषा चुनें:\n1. हिंदी\n2. اردو\n3. English"
@@ -192,15 +270,19 @@ function toggleLanguageMenu() {
 
   if (choice === "1") {
     localStorage.setItem("appLanguage", "hi");
-    alert("हिंदी चुनी गई।");
   } else if (choice === "2") {
     localStorage.setItem("appLanguage", "ur");
-    alert("اردو منتخب کی گئی۔");
   } else if (choice === "3") {
     localStorage.setItem("appLanguage", "en");
-    alert("English selected.");
+  } else {
+    return;
   }
+
+  applyLanguage();
+  alert("भाषा बदल गई!");
 }
+
+applyLanguage();
 
 const centerSelect = document.getElementById("center");
 const centerStatus = document.getElementById("centerStatus");
