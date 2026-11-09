@@ -878,8 +878,8 @@ async function loadCenters() {
   });
 
   if (!data || data.length === 0) {
-    centerStatus.textContent =
-      "अभी कोई सेंटर उपलब्ध नहीं है।";
+    const lang = localStorage.getItem("appLanguage") || "hi";
+centerStatus.textContent = translations[lang].noCenters;
     return;
   }
 
