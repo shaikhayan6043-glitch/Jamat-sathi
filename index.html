@@ -290,13 +290,33 @@ const prayersBox = document.getElementById("prayers");
 let jamaatAdminCenterId = null;
 
 const prayerLabels = {
-  fajr: "फज्र",
-  dhuhr: "ज़ुहर",
-  zuhr: "ज़ुहर",
-  asr: "असर",
-  maghrib: "मगरिब",
-  isha: "ईशा",
-  juma: "जुमा"
+  hi: {
+    fajr: "फज्र",
+    dhuhr: "ज़ुहर",
+    zuhr: "ज़ुहर",
+    asr: "असर",
+    maghrib: "मगरिब",
+    isha: "ईशा",
+    juma: "जुमा"
+  },
+  ur: {
+    fajr: "فجر",
+    dhuhr: "ظہر",
+    zuhr: "ظہر",
+    asr: "عصر",
+    maghrib: "مغرب",
+    isha: "عشاء",
+    juma: "جمعہ"
+  },
+  en: {
+    fajr: "Fajr",
+    dhuhr: "Dhuhr",
+    zuhr: "Dhuhr",
+    asr: "Asr",
+    maghrib: "Maghrib",
+    isha: "Isha",
+    juma: "Juma"
+  }
 };
 
 function formatPrayerTime(value) {
