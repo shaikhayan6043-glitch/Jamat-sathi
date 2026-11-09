@@ -639,7 +639,7 @@ async function loadJamaatReply(centerId) {
   );
 
   if (error) {
-    replyBox.textContent = "जवाब लोड नहीं हो सका।";
+    replyBox.textContent = adminMsg("replyError");
     return;
   }
 
