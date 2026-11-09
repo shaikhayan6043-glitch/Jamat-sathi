@@ -479,7 +479,8 @@ async function loadJamaatInfo(centerId) {
   form.style.display = "none";
 
   if (!centerId) {
-    info.textContent = "पहले अपना सेंटर चुनें।";
+    const lang = localStorage.getItem("appLanguage") || "hi";
+info.textContent = translations[lang].chooseCenter;
     return;
   }
 
