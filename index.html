@@ -165,6 +165,94 @@ function formatPrayerTime(value) {
     ":" + minute + " " + suffix;
 }
 
+async function loadJamaatAdmin(centerId) {
+  const box = document.getElementById("jamaatAdminList");
+
+  if (!box) return;
+
+  box.innerHTML = "<h3>🤝 जमात में चलने की रिक्वेस्ट</h3>";
+
+  if (!centerId) {
+    box.textContent = "पहले सेंटर चुनें।";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("jamaat_requests")
+    .select("id, person_name, admin_message, created_at")
+    .eq("center_id", centerId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    box.textContent = "समस्या: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.textContent = "अभी कोई रिक्वेस्ट नहीं आई है।";
+    return;
+  }
+
+  data.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "notice";
+
+    const name = document.createElement("b");
+    name.textContent = "पूरा नाम: " + item.person_name;
+
+    const message = document.createElement("textarea");
+    message.value = item.admin_message || "";
+    message.placeholder = "जमात में कब चलना है, यहाँ संदेश लिखें";
+    message.rows = 3;
+    message.style.width = "100%";
+    message.style.padding = "10px";
+
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "संदेश सेव करें";
+
+    saveButton.onclick = async () => {
+      const { error } = await supabaseClient
+        .from("jamaat_requests")
+        .update({ admin_message: message.value.trim() })
+        .eq("id", item.id);
+
+      if (error) {
+        alert("समस्या: " + error.message);
+        return;
+      }
+
+      alert("Admin का संदेश सेव हो गया!");
+      await loadJamaatAdmin(centerId);
+    };
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "रिक्वेस्ट हटाएँ";
+    deleteButton.style.background = "#b42318";
+
+    deleteButton.onclick = async () => {
+      if (!confirm("क्या आप यह रिक्वेस्ट हटाना चाहते हैं?")) return;
+
+      const { error } = await supabaseClient
+        .from("jamaat_requests")
+        .delete()
+        .eq("id", item.id);
+
+      if (error) {
+        alert("समस्या: " + error.message);
+        return;
+      }
+
+      alert("रिक्वेस्ट हटा दी गई!");
+      await loadJamaatAdmin(centerId);
+    };
+
+    card.appendChild(name);
+    card.appendChild(message);
+    card.appendChild(saveButton);
+    card.appendChild(deleteButton);
+    box.appendChild(card);
+  });
+}
 async function loadAnnouncementAdmin(centerId) {
   const box = document.getElementById("announcementAdminList");
 
