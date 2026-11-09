@@ -103,6 +103,10 @@ footer{text-align:center;padding:25px;color:#718078}
   <button onclick="saveAnnouncement()">ऐलान प्रकाशित करें</button>
 
   <p id="announcementStatus" class="status"></p>
+<div id="announcementAdminList" style="margin-top:15px">
+  <h3>📝 पुराने ऐलान बदलें या हटाएँ</h3>
+  <p class="status">ऐलान लोड हो रहे हैं...</p>
+</div>
 </div>
   </div>
 </section>
@@ -156,6 +160,99 @@ function formatPrayerTime(value) {
     ":" + minute + " " + suffix;
 }
 
+async function loadAnnouncementAdmin(centerId) {
+  const box = document.getElementById("announcementAdminList");
+
+  if (!box) return;
+
+  box.innerHTML = "<h3>📝 पुराने ऐलान बदलें या हटाएँ</h3>";
+
+  const { data, error } = await supabaseClient
+    .from("announcements")
+    .select("id, center_id, title, message, created_at")
+    .eq("center_id", centerId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    box.textContent = "समस्या: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.textContent = "अभी कोई ऐलान नहीं है।";
+    return;
+  }
+
+  data.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "notice";
+
+    const title = document.createElement("input");
+    title.value = item.title;
+    title.placeholder = "ऐलान का शीर्षक";
+
+    const message = document.createElement("textarea");
+    message.value = item.message;
+    message.rows = 3;
+    message.style.width = "100%";
+    message.style.padding = "10px";
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "बदलाव सेव करें";
+
+    editButton.onclick = async () => {
+      if (!title.value.trim() || !message.value.trim()) {
+        alert("शीर्षक और जानकारी दोनों भरें।");
+        return;
+      }
+
+      const { error } = await supabaseClient
+        .from("announcements")
+        .update({
+          title: title.value.trim(),
+          message: message.value.trim()
+        })
+        .eq("id", item.id);
+
+      if (error) {
+        alert("समस्या: " + error.message);
+        return;
+      }
+
+      alert("ऐलान सफलतापूर्वक बदल गया!");
+      await loadAnnouncements(centerSelect.value);
+      await loadAnnouncementAdmin(centerId);
+    };
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "ऐलान हटाएँ";
+    deleteButton.style.background = "#b42318";
+
+    deleteButton.onclick = async () => {
+      if (!confirm("क्या आप यह ऐलान हटाना चाहते हैं?")) return;
+
+      const { error } = await supabaseClient
+        .from("announcements")
+        .delete()
+        .eq("id", item.id);
+
+      if (error) {
+        alert("समस्या: " + error.message);
+        return;
+      }
+
+      alert("ऐलान हटा दिया गया!");
+      await loadAnnouncements(centerSelect.value);
+      await loadAnnouncementAdmin(centerId);
+    };
+
+    card.appendChild(title);
+    card.appendChild(message);
+    card.appendChild(editButton);
+    card.appendChild(deleteButton);
+    box.appendChild(card);
+  });
+}
 async function loadAnnouncements(centerId) {
   const box = document.getElementById("announcementsList");
 
@@ -416,6 +513,11 @@ async function adminLogin() {
     "स्वागत है " + profile.full_name + " (" + profile.role + ")";
 
   document.getElementById("adminLogoutButton").style.display = "block";
+const announcementCenterId = profile.role === "main_admin"
+  ? centerSelect.value
+  : profile.center_id;
+
+await loadAnnouncementAdmin(announcementCenterId);
   status.textContent = "लॉगिन सफल!";
 }
 
