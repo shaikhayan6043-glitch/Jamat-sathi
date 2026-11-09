@@ -392,6 +392,43 @@ function applyLanguage() {
   );
   jamaatButtons[0].textContent = t.saveJamaatInfo;
   jamaatButtons[1].textContent = t.closeJamaat;
+  const extra = {
+    hi: {
+      centerOption: "अपना सेंटर चुनें",
+      prayerNote: "समय आपके चुने हुए सेंटर के अनुसार दिखेगा।",
+      email: "Admin Email",
+      password: "Password",
+      footer: "JAMAT SATHI © 2026"
+    },
+    ur: {
+      centerOption: "اپنا مرکز منتخب کریں",
+      prayerNote: "اوقات آپ کے منتخب کردہ مرکز کے مطابق دکھائے جائیں گے۔",
+      email: "ایڈمن ای میل",
+      password: "پاس ورڈ",
+      footer: "JAMAT SATHI © 2026"
+    },
+    en: {
+      centerOption: "Select your center",
+      prayerNote: "Timings are shown according to your selected center.",
+      email: "Admin Email",
+      password: "Password",
+      footer: "JAMAT SATHI © 2026"
+    }
+  };
+
+  const e = extra[lang] || extra.hi;
+
+  const centerOption = document.querySelector("#center option");
+  if (centerOption) centerOption.textContent = e.centerOption;
+
+  const prayerNote = document.querySelector("#prayers + small");
+  if (prayerNote) prayerNote.textContent = e.prayerNote;
+
+  document.getElementById("adminEmail").placeholder = e.email;
+  document.getElementById("adminPassword").placeholder = e.password;
+
+  const footer = document.querySelector("footer");
+  if (footer) footer.textContent = e.footer;
 }
 
 function toggleLanguageMenu() {
