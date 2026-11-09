@@ -808,7 +808,7 @@ box.textContent = translations[lang].noRequests;
         .eq("id", item.id);
 
       if (error) {
-        alert("समस्या: " + error.message);
+        alert(adminMsg("loadError") + " " + error.message);
         return;
       }
 
