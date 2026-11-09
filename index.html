@@ -904,8 +904,9 @@ centerSelect.addEventListener("change", async function() {
 
   if (!centerId) {
     localStorage.removeItem("jamatCenter");
-    prayersBox.innerHTML =
-      '<p class="status">पहले अपना सेंटर चुनें।</p>';
+    const lang = localStorage.getItem("appLanguage") || "hi";
+prayersBox.innerHTML =
+  '<p class="status">' + translations[lang].chooseCenter + '</p>';
     return;
   }
 
