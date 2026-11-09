@@ -255,6 +255,66 @@ async function loadJamaatAdminInfo(centerId) {
     status.textContent = "अभी कोई जानकारी प्रकाशित नहीं है।";
   }
 }
+async function saveJamaatInfo() {
+  const centerId = jamaatAdminCenterId || centerSelect.value;
+  const title = document.getElementById("jamaatTitle").value.trim();
+  const message = document.getElementById("jamaatMessage").value.trim();
+  const status = document.getElementById("jamaatInfoStatus");
+
+  if (!centerId) {
+    status.textContent = "पहले सेंटर चुनें।";
+    return;
+  }
+
+  if (!title || !message) {
+    status.textContent = "शीर्षक और जानकारी दोनों भरें।";
+    return;
+  }
+
+  status.textContent = "जानकारी सेव हो रही है...";
+
+  const { error } = await supabaseClient
+    .from("jamaat_info")
+    .upsert({
+      center_id: centerId,
+      title: title,
+      message: message,
+      active: true
+    }, { onConflict: "center_id" });
+
+  if (error) {
+    status.textContent = "समस्या: " + error.message;
+    return;
+  }
+
+  status.textContent = "जमात की जानकारी प्रकाशित हो गई!";
+  await loadJamaatInfo(centerId);
+}
+
+async function deleteJamaatInfo() {
+  const centerId = jamaatAdminCenterId || centerSelect.value;
+  const status = document.getElementById("jamaatInfoStatus");
+
+  if (!centerId) {
+    status.textContent = "पहले सेंटर चुनें।";
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("jamaat_info")
+    .delete()
+    .eq("center_id", centerId);
+
+  if (error) {
+    status.textContent = "समस्या: " + error.message;
+    return;
+  }
+
+  document.getElementById("jamaatTitle").value = "";
+  document.getElementById("jamaatMessage").value = "";
+  status.textContent = "जमात की जानकारी हटा दी गई।";
+  await loadJamaatInfo(centerId);
+}
 async function loadJamaatAdmin(centerId) {
   const box = document.getElementById("jamaatAdminList");
 
