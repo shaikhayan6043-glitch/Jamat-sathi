@@ -644,7 +644,7 @@ async function loadJamaatReply(centerId) {
   }
 
   if (data) {
-    replyBox.textContent = "Admin का जवाब: " + data;
+   replyBox.textContent = adminMsg("adminReply") + data;
   }
 }
 async function loadJamaatAdminInfo(centerId) {
