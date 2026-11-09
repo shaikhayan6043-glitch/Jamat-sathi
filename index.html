@@ -640,7 +640,8 @@ async function loadJamaatAdmin(centerId) {
   }
 
   if (!data || data.length === 0) {
-    box.textContent = "अभी कोई रिक्वेस्ट नहीं आई है।";
+    const lang = localStorage.getItem("appLanguage") || "hi";
+box.textContent = translations[lang].noRequests;
     return;
   }
 
