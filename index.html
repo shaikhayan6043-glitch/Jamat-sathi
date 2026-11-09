@@ -702,25 +702,32 @@ async function joinJamaat() {
 
   result.textContent = "रिक्वेस्ट भेजी जा रही है...";
 
+  const accessToken = crypto.randomUUID();
+
   const { error } = await supabaseClient
     .from("jamaat_requests")
     .insert({
       center_id: centerId,
       user_id: null,
-      person_name: name
+      person_name: name,
+      access_token: accessToken
     });
 
   if (error) {
-  if (error.code === "23505") {
-    result.textContent = "तुम्हारा नाम पहले ही सबमिट हुआ है।";
-  } else {
-    result.textContent = "समस्या: " + error.message;
+    if (error.code === "23505") {
+      result.textContent = "तुम्हारा नाम पहले ही सबमिट हुआ है।";
+    } else {
+      result.textContent = "समस्या: " + error.message;
+    }
+    return;
   }
-  return;
-}
+
+  localStorage.setItem("jamaatReplyToken_" + centerId, accessToken);
 
   result.textContent = "आपकी रिक्वेस्ट सफलतापूर्वक भेज दी गई!";
   document.getElementById("person").value = "";
+
+  await loadJamaatReply(centerId);
 }
 
 async function adminLogin() {
