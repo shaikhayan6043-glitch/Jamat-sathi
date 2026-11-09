@@ -367,6 +367,85 @@ async function adminLogout() {
   document.getElementById("adminLogoutButton").style.display = "none";
   document.getElementById("adminStatus").textContent = "आप लॉगआउट हो गए हैं।";
 }
+async function savePrayerTime() {
+  const status = document.getElementById("prayerSaveStatus");
+  const prayer = document.getElementById("editPrayer").value;
+  const azan = document.getElementById("editAzan").value;
+  const jamaat = document.getElementById("editJamaat").value;
+
+  if (!azan || !jamaat) {
+    status.textContent = "अज़ान और जमात दोनों का समय भरें।";
+    return;
+  }
+
+  status.textContent = "समय सेव हो रहा है...";
+
+  const { data: userData, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !userData.user) {
+    status.textContent = "पहले Admin Login करें।";
+    return;
+  }
+
+  const { data: profile, error: profileError } =
+    await supabaseClient
+      .from("profiles")
+      .select("role, center_id")
+      .eq("id", userData.user.id)
+      .single();
+
+  if (profileError || !profile ||
+      !["main_admin", "center_admin"].includes(profile.role)) {
+    status.textContent = "Admin की अनुमति नहीं मिली।";
+    return;
+  }
+
+  const centerId = profile.role === "main_admin"
+    ? centerSelect.value
+    : profile.center_id;
+
+  if (!centerId) {
+    status.textContent = "पहले सेंटर चुनें।";
+    return;
+  }
+
+  const { data: updated, error: updateError } =
+    await supabaseClient
+      .from("prayer_times")
+      .update({
+        azan_time: azan,
+        jamaat_time: jamaat
+      })
+      .eq("center_id", centerId)
+      .eq("prayer_name", prayer)
+      .select("center_id")
+      .maybeSingle();
+
+  if (updateError) {
+    status.textContent = "समस्या: " + updateError.message;
+    return;
+  }
+
+  if (!updated) {
+    const { error: insertError } = await supabaseClient
+      .from("prayer_times")
+      .insert({
+        center_id: centerId,
+        prayer_name: prayer,
+        azan_time: azan,
+        jamaat_time: jamaat
+      });
+
+    if (insertError) {
+      status.textContent = "समस्या: " + insertError.message;
+      return;
+    }
+  }
+
+  status.textContent = "नमाज़ का समय सफलतापूर्वक सेव हो गया!";
+  await loadPrayerTimes(centerId);
+}
 loadCenters();
 </script>
 
