@@ -896,7 +896,7 @@ box.textContent = translations[lang].noAnnouncement;
     deleteButton.style.background = "#b42318";
 
     deleteButton.onclick = async () => {
-      if (!confirm(adminMsg("chooseCenter"))) return;
+     if (!confirm(adminMsg("confirmDeleteAnnouncement"))) return;
 
       const { error } = await supabaseClient
         .from("announcements")
