@@ -602,7 +602,7 @@ info.textContent = translations[lang].chooseCenter;
     .maybeSingle();
 
   if (error) {
-    info.textContent = "जानकारी लोड नहीं हो सकी।";
+    info.textContent = adminMsg("loadError");
     return;
   }
 
