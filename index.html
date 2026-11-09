@@ -108,9 +108,8 @@ footer{text-align:center;padding:25px;color:#718078}
 </section>
 <section class="card">
 <h2>📢 ऐलान और घोषणाएँ</h2>
-<div class="notice">
-<b>JAMAT SATHI में आपका स्वागत है!</b>
-<p>अपने सेंटर की नई घोषणाएँ यहाँ देख सकेंगे।</p>
+<div id="announcementsList">
+  <p class="status">ऐलान लोड हो रहे हैं...</p>
 </div>
 </section>
 
@@ -157,6 +156,49 @@ function formatPrayerTime(value) {
     ":" + minute + " " + suffix;
 }
 
+async function loadAnnouncements(centerId) {
+  const box = document.getElementById("announcementsList");
+
+  if (!centerId) {
+    box.innerHTML = '<p class="status">पहले अपना सेंटर चुनें।</p>';
+    return;
+  }
+
+  box.innerHTML = '<p class="status">ऐलान लोड हो रहे हैं...</p>';
+
+  const { data, error } = await supabaseClient
+    .from("announcements")
+    .select("title, message, created_at")
+    .eq("center_id", centerId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    box.textContent = "ऐलान लोड नहीं हुए: " + error.message;
+    return;
+  }
+
+  box.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    box.textContent = "अभी कोई नया ऐलान नहीं है।";
+    return;
+  }
+
+  data.forEach(item => {
+    const notice = document.createElement("div");
+    notice.className = "notice";
+
+    const title = document.createElement("b");
+    title.textContent = item.title;
+
+    const message = document.createElement("p");
+    message.textContent = item.message;
+
+    notice.appendChild(title);
+    notice.appendChild(message);
+    box.appendChild(notice);
+  });
+}
 async function loadCenters() {
   centerStatus.textContent = "सेंटर लोड हो रहे हैं...";
 
@@ -195,6 +237,7 @@ async function loadCenters() {
   if (savedCenter && data.some(c => c.id === savedCenter)) {
     centerSelect.value = savedCenter;
     await loadPrayerTimes(savedCenter);
+await loadAnnouncements(savedCenter);
     centerStatus.textContent = "आपका सेंटर चुना हुआ है।";
   } else {
     centerStatus.textContent = "कृपया अपना सेंटर चुनें।";
@@ -215,6 +258,7 @@ centerSelect.addEventListener("change", async function() {
   centerStatus.textContent = "सेंटर चुना गया।";
 
   await loadPrayerTimes(centerId);
+await loadAnnouncements(centerId);
 });
 
 async function loadPrayerTimes(centerId) {
