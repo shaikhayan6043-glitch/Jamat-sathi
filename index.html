@@ -106,13 +106,17 @@ footer{text-align:center;padding:25px;color:#718078}
   <div id="centerManagementList"><p class="status">सेंटर लोड हो रहे हैं...</p></div>
 
   <hr style="border:0;border-top:1px solid #cbded2;margin:18px 0">
-  <h4>👤 Center Admin नियुक्त करें</h4>
-  <p class="status">पहले व्यक्ति का अकाउंट Authentication → Users में बनाएँ और उसका Profile रिकॉर्ड तैयार करें। फिर उसका User ID यहाँ डालें।</p>
-  <select id="managedCenterSelect"><option value="">सेंटर चुनें</option></select>
-  <input id="centerAdminUserId" type="text" placeholder="Center Admin का User ID (UUID)">
-  <button onclick="assignCenterAdmin()">इस सेंटर का Admin नियुक्त करें</button>
+  
+  <h4>👤 नया Center Admin बनाएँ</h4>
+  <select id="managedCenterSelect">
+    <option value="">सेंटर चुनें</option>
+  </select>
+  <input id="centerAdminName" type="text" placeholder="Center Admin का पूरा नाम">
+  <input id="centerAdminEmail" type="email" placeholder="Center Admin की ईमेल आईडी">
+  <input id="centerAdminPassword" type="password" placeholder="पासवर्ड (कम से कम 8 अक्षर)">
+  <button onclick="createCenterAdmin()">＋ Center Admin अकाउंट बनाएँ</button>
   <p id="centerAdminStatus" class="status"></p>
-</div>
+  
 <div id="prayerAdmin" style="margin-top:15px">
   <h3 id="prayerAdminTitle">🕋 नमाज़ का समय बदलें</h3>
 
