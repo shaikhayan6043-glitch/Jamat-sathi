@@ -905,8 +905,7 @@ editButton.textContent = translations[lang].editAnnouncement;
     };
 
     const deleteButton = document.createElement("button");
-    const lang = 
-deleteButton.textContent = translations[lang].deleteAnnouncement;
+    deleteButton.textContent = translations[lang].deleteAnnouncement;
     deleteButton.style.background = "#b42318";
 
     deleteButton.onclick = async () => {
@@ -1300,6 +1299,12 @@ async function saveAnnouncement() {
   status.textContent = "ऐलान सफलतापूर्वक प्रकाशित हो गया!";
   document.getElementById("announcementTitle").value = "";
   document.getElementById("announcementMessage").value = "";
+
+  // Refresh the public announcements and the admin list after publishing.
+  if (centerSelect.value === centerId) {
+    await loadAnnouncements(centerId);
+  }
+  await loadAnnouncementAdmin(centerId);
 }
 async function savePrayerTime() {
   const status = document.getElementById("prayerSaveStatus");
