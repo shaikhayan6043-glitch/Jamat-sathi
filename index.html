@@ -542,7 +542,7 @@ function applyLanguage() {
   document.getElementById("adminPassword").placeholder = e.password;
 
   const footer = document.querySelector("footer");
-  if (footer) footer.textContent = e.footer;
+  if (footer) footer.innerHTML = e.footer + "<br>This app Created by Ayan Shaikh (आयान शेख)";
 }
 const adminMessages = {
   hi: {
