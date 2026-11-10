@@ -1125,7 +1125,10 @@ assignInfo.textContent =
     const removeButton = document.createElement("button");
 removeButton.textContent = "इस सेंटर से एडमिन हटाएँ";
 removeButton.style.background = "#b42318";
-removeButton.onclick = () => removeCenterAdmin(center.id);
+removeButton.onclick = () => {
+  alert("बटन क्लिक हुआ");
+  removeCenterAdmin(center.id);
+};
 
     const saveButton = document.createElement("button");
     saveButton.textContent = "सेंटर का नाम सेव करें";
