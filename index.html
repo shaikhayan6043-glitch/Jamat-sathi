@@ -1103,10 +1103,18 @@ async function loadCenterManagement() {
     adminRows.forEach(admin => {
       const option = document.createElement("option");
       option.value = admin.id;
-      option.textContent = admin.full_name || admin.id;
+      const currentCenter = centerRows.find(c => c.id === admin.center_id);
+
+option.textContent =
+  (admin.full_name || admin.id) +
+  " — अभी: " + (currentCenter ? currentCenter.name : "कोई सेंटर नहीं");
       adminSelect.appendChild(option);
     });
 
+   const assignInfo = document.createElement("p");
+assignInfo.className = "status";
+assignInfo.textContent =
+  "इस एडमिन को " + center.name + " सेंटर में नियुक्त किया जाएगा।";
     if (admins.length) {
       adminSelect.value = admins[0].id;
     }
@@ -1129,6 +1137,7 @@ async function loadCenterManagement() {
     card.appendChild(deleteButton);
     card.appendChild(adminInfo);
     card.appendChild(adminSelect);
+    card.appendChild(assignInfo);
     card.appendChild(assignButton);
     box.appendChild(card);
     
