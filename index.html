@@ -888,7 +888,7 @@ box.textContent = translations[lang].noAnnouncement;
         .eq("id", item.id);
 
       if (error) {
-        alert("समस्या: " + error.message);
+        alert(adminMsg("loadError") + " " + error.message);
         return;
       }
 
@@ -914,7 +914,7 @@ box.textContent = translations[lang].noAnnouncement;
         return;
       }
 
-      alert("ऐलान हटा दिया गया!");
+      alert(adminMsg("announcementDeleted"));
       await loadAnnouncements(centerSelect.value);
       await loadAnnouncementAdmin(centerId);
     };
