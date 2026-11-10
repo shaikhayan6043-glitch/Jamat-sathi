@@ -900,21 +900,23 @@ async function loadJamaatAdmin(centerId) {
   const accepted = requests.filter(x => x.status === "accepted").length;
   const pending = total - accepted;
 
-  const summary = document.createElement("div");
-  summary.className = "notice";
-  summary.innerHTML =
-    "<b>📊 कुल रिक्वेस्ट: " + total + "</b><br>" +
-    "✅ स्वीकार की गई: " + accepted + "<br>" +
-    "⏳ Pending: " + pending;
+  
+if (total === 0) {
+  const empty = document.createElement("p");
+  empty.textContent = "अभी कोई रिक्वेस्ट नहीं है।";
+  box.appendChild(empty);
+  return;
+}
 
-  box.appendChild(summary);
+const summary = document.createElement("div");
+summary.className = "notice";
+summary.innerHTML =
+  "<b>📊 कुल रिक्वेस्ट: " + total + "</b><br>" +
+  "✅ स्वीकार की गई: " + accepted + "<br>" +
+  "⏳ Pending: " + pending;
 
-  if (total === 0) {
-    const empty = document.createElement("p");
-    empty.textContent = "अभी कोई रिक्वेस्ट नहीं है।";
-    box.appendChild(empty);
-    return;
-  }
+box.appendChild(summary);
+  
 
   requests.forEach(item => {
     const card = document.createElement("div");
