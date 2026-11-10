@@ -224,6 +224,52 @@ button, select, input {
   min-height: 44px;
 }
   
+/* LARGE THEMED LANGUAGE PICKER */
+#languageModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,.62);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#languageModal .language-dialog {
+  width: 100%;
+  max-width: 380px;
+  background: #fffaf0;
+  border: 2px solid #c9a64b;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 12px 40px #0005;
+  text-align: center;
+}
+#languageModal h2 {
+  color: #064b38;
+  font-size: 23px;
+  margin: 0 0 16px;
+}
+#languageModal .language-option {
+  display: block;
+  width: 100%;
+  min-height: 58px;
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid #c9a64b;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#087653,#064b38);
+  color: #fff;
+  font-size: 21px;
+  font-weight: bold;
+}
+#languageModal .language-close {
+  background: #eee5cf;
+  color: #064b38;
+  border: 1px solid #c9a64b;
+  font-size: 16px;
+  min-height: 46px;
+}
 </style>
 </head>
 <body>
