@@ -30,6 +30,200 @@ small{color:#60766b}
 .status{font-size:14px;margin:10px 0;color:#60766b}
 .error{color:#b42318}
 footer{text-align:center;padding:25px;color:#718078}
+
+/* ===== JAMAT SATHI ISLAMIC THEME ===== */
+
+:root {
+  --islam-green: #064b38;
+  --deep-green: #032f25;
+  --gold: #c9a64b;
+  --light-gold: #ead9a0;
+  --cream: #fffaf0;
+  --soft-green: #e8f2e9;
+  --text-green: #173f31;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: var(--text-green);
+  background-color: var(--deep-green);
+  background-image:
+    radial-gradient(circle at 2px 2px, #ffffff12 1px, transparent 1.5px),
+    repeating-linear-gradient(45deg, #ffffff08 0px, #ffffff08 1px, transparent 1px, transparent 18px);
+  background-size: 22px 22px, 36px 36px;
+}
+
+/* Header */
+header {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, #16815c 0%, transparent 45%),
+    linear-gradient(135deg, #032f25, #075b43, #043c2e) !important;
+  color: #fff9e8;
+  padding: 30px 18px 26px;
+  border-radius: 0 0 28px 28px;
+  border-bottom: 4px solid var(--gold);
+  box-shadow: 0 5px 18px #0005;
+}
+
+header h1 {
+  color: #f4df9b;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 5px #0008;
+}
+
+header p {
+  color: #f7efd6 !important;
+}
+
+/* Settings button */
+.settings-button {
+  background: var(--cream) !important;
+  color: var(--islam-green) !important;
+  border: 2px solid var(--gold) !important;
+  border-radius: 12px !important;
+}
+
+/* Main sections */
+main {
+  padding: 16px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.card {
+  position: relative;
+  background: var(--cream);
+  padding: 18px;
+  margin: 17px 0;
+  border: 1px solid var(--gold);
+  border-radius: 18px;
+  box-shadow: 0 5px 16px #0004;
+}
+
+h2 {
+  color: var(--islam-green);
+  font-size: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--light-gold);
+}
+
+h3, h4 {
+  color: var(--islam-green);
+}
+
+/* Buttons */
+button {
+  background: linear-gradient(135deg, #087653, #034b37) !important;
+  color: #fff9e8 !important;
+  border: 1px solid var(--gold) !important;
+  border-radius: 12px !important;
+  padding: 14px;
+  font-weight: bold;
+  box-shadow: 0 3px 7px #0002;
+  transition: transform .15s, box-shadow .15s;
+}
+
+button:active {
+  transform: scale(.98);
+  box-shadow: 0 1px 3px #0003;
+}
+
+/* Delete / danger buttons */
+button[style*="b42318"] {
+  background: linear-gradient(135deg, #a52a2a, #741b1b) !important;
+  border-color: #d9a0a0 !important;
+}
+
+/* Input fields */
+select, input, textarea {
+  background: #fffdf7 !important;
+  color: #173f31 !important;
+  border: 1px solid #c9b77e !important;
+  border-radius: 11px !important;
+  padding: 13px;
+  outline: none;
+}
+
+select:focus, input:focus, textarea:focus {
+  border: 2px solid #087653 !important;
+  box-shadow: 0 0 0 3px #08765320;
+}
+
+/* Prayer rows */
+.prayer {
+  border-bottom: 1px solid #dfd2aa;
+  padding: 14px 4px;
+}
+
+.prayer-name {
+  color: var(--islam-green);
+  font-weight: bold;
+}
+
+.prayer-times {
+  color: #735d24;
+  font-weight: bold;
+}
+
+/* Information boxes */
+.notice {
+  background: linear-gradient(135deg, #edf5e9, #fff8e7) !important;
+  border: 1px solid var(--light-gold);
+  border-left: 4px solid var(--gold);
+  border-radius: 12px;
+  padding: 14px;
+  margin: 10px 0;
+}
+
+.status, small {
+  color: #66796c;
+}
+
+.error {
+  color: #a52a2a;
+}
+
+/* Settings and admin panels */
+#settingsMenu {
+  background: var(--cream) !important;
+  border: 1px solid var(--gold);
+  border-radius: 15px !important;
+}
+
+#centerManagement {
+  background: var(--soft-green) !important;
+  border: 1px solid var(--gold);
+  border-radius: 14px !important;
+}
+
+#adminSection {
+  border: 2px solid var(--gold);
+}
+
+/* Separators */
+hr {
+  border-color: var(--light-gold) !important;
+}
+
+/* Footer */
+footer {
+  color: #f4df9b;
+  padding: 28px 15px;
+  text-align: center;
+}
+
+/* Mobile touch */
+button, select, input {
+  min-height: 44px;
+}
+  
 </style>
 </head>
 <body>
