@@ -829,22 +829,18 @@ function adminMsg(key) {
   return adminMessages[lang][key] || adminMessages.hi[key] || key;
 }
 function toggleLanguageMenu() {
-  const choice = prompt(
-    "भाषा चुनें:\n1. हिंदी\n2. اردو\n3. English"
-  );
+  document.getElementById("languageModal").style.display = "flex";
+}
 
-  if (choice === "1") {
-    localStorage.setItem("appLanguage", "hi");
-  } else if (choice === "2") {
-    localStorage.setItem("appLanguage", "ur");
-  } else if (choice === "3") {
-    localStorage.setItem("appLanguage", "en");
-  } else {
-    return;
-  }
+function closeLanguageMenu() {
+  document.getElementById("languageModal").style.display = "none";
+}
 
+function chooseAppLanguage(lang) {
+  if (!["hi", "ur", "en"].includes(lang)) return;
+  localStorage.setItem("appLanguage", lang);
   applyLanguage();
-  alert("भाषा बदल गई!");
+  closeLanguageMenu();
 }
 
 applyLanguage();
