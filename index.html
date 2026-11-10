@@ -467,60 +467,76 @@ const supabaseClient = window.supabase.createClient(
 );
 
 function openRakatPage() {
-  document.getElementById("rakatPage").style.display = "block";
 
-  document.getElementById("rakatDetails").innerHTML = `
-    <div class="notice">
-      <h3>🌅 फज्र</h3>
-      सुन्नत: 2 रकअत<br>
-      फ़र्ज़: 2 रकअत
-    </div>
+function openRakatPage() {
+  const lang = localStorage.getItem("appLanguage") || "hi";
 
-    <div class="notice">
-      <h3>☀️ ज़ुहर</h3>
-      सुन्नत: 4 पहले<br>
-      फ़र्ज़: 4<br>
-      सुन्नत: 2 बाद में<br>
-      नफ़्ल: 2
-    </div>
+  const content = {
+    hi: {
+      back: "⬅ वापस जाएँ",
+      title: "📖 नमाज़ की रकअत",
+      desc: "हनफ़ी तरीके के अनुसार पाँच वक्त की नमाज़ और जुमा की रकअत की जानकारी।",
+      names: ["🌅 फज्र", "☀️ ज़ुहर", "🌤️ असर", "🌇 मगरिब", "🌙 ईशा", "🕌 जुमा"],
+      details: [
+        "सुन्नत: 2 रकअत<br>फ़र्ज़: 2 रकअत",
+        "सुन्नत: 4 पहले<br>फ़र्ज़: 4<br>सुन्नत: 2 बाद में<br>नफ़्ल: 2",
+        "सुन्नत: 4 पहले (ग़ैर मुअक्कदा)<br>फ़र्ज़: 4",
+        "फ़र्ज़: 3<br>सुन्नत: 2<br>नफ़्ल: 2",
+        "सुन्नत: 4 पहले (ग़ैर मुअक्कदा)<br>फ़र्ज़: 4<br>सुन्नत: 2<br>नफ़्ल: 2<br>वित्र: 3<br>नफ़्ल: 2",
+        "सुन्नत: 4 पहले<br>फ़र्ज़: 2 (इमाम के पीछे)<br>सुन्नत: 4 बाद में<br>सुन्नत: 2 बाद में<br>नफ़्ल: 2"
+      ]
+    },
+    ur: {
+      back: "⬅ واپس جائیں",
+      title: "📖 نماز کی رکعتیں",
+      desc: "حنفی طریقے کے مطابق پانچ وقت کی نماز اور جمعہ کی رکعتوں کی معلومات۔",
+      names: ["🌅 فجر", "☀️ ظہر", "🌤️ عصر", "🌇 مغرب", "🌙 عشاء", "🕌 جمعہ"],
+      details: [
+        "سنت: 2 رکعت<br>فرض: 2 رکعت",
+        "سنت: پہلے 4<br>فرض: 4<br>سنت: بعد میں 2<br>نفل: 2",
+        "سنت: پہلے 4 (غیر مؤکدہ)<br>فرض: 4",
+        "فرض: 3<br>سنت: 2<br>نفل: 2",
+        "سنت: پہلے 4 (غیر مؤکدہ)<br>فرض: 4<br>سنت: 2<br>نفل: 2<br>وتر: 3<br>نفل: 2",
+        "سنت: پہلے 4<br>فرض: 2 (امام کے پیچھے)<br>سنت: بعد میں 4<br>سنت: بعد میں 2<br>نفل: 2"
+      ]
+    },
+    en: {
+      back: "⬅ Go Back",
+      title: "📖 Prayer Rakats",
+      desc: "Rakats for the five daily prayers and Jumu'ah according to the Hanafi method.",
+      names: ["🌅 Fajr", "☀️ Dhuhr", "🌤️ Asr", "🌇 Maghrib", "🌙 Isha", "🕌 Jumu'ah"],
+      details: [
+        "Sunnah: 2 Rakats<br>Fard: 2 Rakats",
+        "Sunnah: 4 before<br>Fard: 4<br>Sunnah: 2 after<br>Nafl: 2",
+        "Sunnah: 4 before (Ghair Muakkadah)<br>Fard: 4",
+        "Fard: 3<br>Sunnah: 2<br>Nafl: 2",
+        "Sunnah: 4 before (Ghair Muakkadah)<br>Fard: 4<br>Sunnah: 2<br>Nafl: 2<br>Witr: 3<br>Nafl: 2",
+        "Sunnah: 4 before<br>Fard: 2 (behind Imam)<br>Sunnah: 4 after<br>Sunnah: 2 after<br>Nafl: 2"
+      ]
+    }
+  };
 
-    <div class="notice">
-      <h3>🌤️ असर</h3>
-      सुन्नत: 4 पहले (ग़ैर मुअक्कदा)<br>
-      फ़र्ज़: 4
-    </div>
+  const t = content[lang] || content.hi;
+  const page = document.getElementById("rakatPage");
 
-    <div class="notice">
-      <h3>🌇 मगरिब</h3>
-      फ़र्ज़: 3<br>
-      सुन्नत: 2<br>
-      नफ़्ल: 2
-    </div>
-
-    <div class="notice">
-      <h3>🌙 ईशा</h3>
-      सुन्नत: 4 पहले (ग़ैर मुअक्कदा)<br>
-      फ़र्ज़: 4<br>
-      सुन्नत: 2<br>
-      नफ़्ल: 2<br>
-      वित्र: 3<br>
-      नफ़्ल: 2
-    </div>
-
-    <div class="notice">
-      <h3>🕌 जुमा</h3>
-      सुन्नत: 4 पहले<br>
-      फ़र्ज़: 2 (इमाम के पीछे)<br>
-      सुन्नत: 4 बाद में<br>
-      सुन्नत: 2 बाद में<br>
-      नफ़्ल: 2
+  page.innerHTML = `
+    <button onclick="closeRakatPage()">${t.back}</button>
+    <h2>${t.title}</h2>
+    <p>${t.desc}</p>
+    <div id="rakatDetails">
+      ${t.names.map((name, i) => `
+        <div class="notice">
+          <h3>${name}</h3>
+          ${t.details[i]}
+        </div>
+      `).join("")}
     </div>
   `;
 
-  document.getElementById("rakatPage").scrollIntoView({
-    behavior: "smooth"
-  });
+  page.style.display = "block";
+  page.scrollIntoView({ behavior: "smooth" });
 }
+  
 
 function closeRakatPage() {
   document.getElementById("rakatPage").style.display = "none";
