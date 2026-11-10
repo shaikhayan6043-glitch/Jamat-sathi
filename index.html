@@ -1072,6 +1072,18 @@ async function loadCenterManagement() {
 
   const centerRows = centers || [];
   const adminRows = profiles || [];
+  const passwordSelect = document.getElementById("passwordAdminSelect");
+
+if (passwordSelect) {
+  passwordSelect.innerHTML = '<option value="">Center Admin चुनें</option>';
+
+  adminRows.forEach(admin => {
+    const option = document.createElement("option");
+    option.value = admin.id;
+    option.textContent = admin.full_name || "बिना नाम";
+    passwordSelect.appendChild(option);
+  });
+}
   select.innerHTML = '<option value="">सेंटर चुनें</option>';
   centerRows.forEach(center => {
     const option = document.createElement("option");
