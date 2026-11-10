@@ -454,6 +454,7 @@ const adminMessages = {
     timeSaving: "समय सेव हो रहा है...",
 confirmDeleteAnnouncement: "क्या आप यह ऐलान हटाना चाहते हैं?",
 announcementUpdated: "ऐलान सफलतापूर्वक बदल गया!",
+announcementDeleted: "ऐलान हटा दिया गया!",
   },
   ur: {
     loadError: "معلومات لوڈ نہیں ہو سکیں۔",
@@ -478,6 +479,7 @@ announcementUpdated: "ऐलान सफलतापूर्वक बदल �
     timeSaving: "وقت محفوظ ہو رہا ہے...",
 confirmDeleteAnnouncement: "کیا آپ یہ اعلان حذف کرنا چاہتے ہیں؟",
 announcementUpdated: "اعلان کامیابی سے تبدیل ہو گیا!",
+announcementDeleted: "اعلان حذف کر دیا گیا!",
   },
   en: {
     loadError: "Information could not be loaded.",
@@ -502,6 +504,7 @@ announcementUpdated: "اعلان کامیابی سے تبدیل ہو گیا!",
     timeSaving: "Saving prayer times...",
 confirmDeleteAnnouncement: "Are you sure you want to delete this announcement?",
 announcementUpdated: "Announcement updated successfully!",
+announcementDeleted: "Announcement deleted successfully!",
   }
 };
 
@@ -889,7 +892,7 @@ box.textContent = translations[lang].noAnnouncement;
         return;
       }
 
-      alert("ऐलान सफलतापूर्वक बदल गया!");
+      alert(adminMsg("announcementUpdated"));
       await loadAnnouncements(centerSelect.value);
       await loadAnnouncementAdmin(centerId);
     };
