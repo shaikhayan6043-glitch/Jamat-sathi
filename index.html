@@ -106,7 +106,16 @@ footer{text-align:center;padding:25px;color:#718078}
   <div id="centerManagementList"><p class="status">सेंटर लोड हो रहे हैं...</p></div>
 
   <hr style="border:0;border-top:1px solid #cbded2;margin:18px 0">
-  
+  <hr style="border:0;border-top:1px solid #cbded2;margin:18px 0">
+
+<h4>🔐 Center Admin का पासवर्ड बदलें</h4>
+<select id="passwordAdminSelect">
+  <option value="">Center Admin चुनें</option>
+</select>
+<input id="newCenterAdminPassword" type="password"
+  placeholder="नया पासवर्ड (कम से कम 8 अक्षर)">
+<button onclick="resetCenterAdminPassword()">पासवर्ड बदलें</button>
+<p id="passwordResetStatus" class="status"></p>
   <h4>👤 नया Center Admin बनाएँ</h4>
   <select id="managedCenterSelect">
     <option value="">सेंटर चुनें</option>
