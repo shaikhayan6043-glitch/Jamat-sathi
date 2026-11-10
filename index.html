@@ -1085,24 +1085,53 @@ async function loadCenterManagement() {
     nameInput.value = center.name || "";
     nameInput.setAttribute("aria-label", "सेंटर का नाम");
 
+    
     const adminInfo = document.createElement("p");
     adminInfo.className = "status";
+
     const admins = adminRows.filter(a => a.center_id === center.id);
     adminInfo.textContent = admins.length
-      ? "Center Admin: " + admins.map(a => (a.full_name || "बिना नाम") + " — User ID: " + a.id).join(" | ")
+      ? "मौजूदा Center Admin: " + admins.map(a => a.full_name || "बिना नाम").join(", ")
       : "इस सेंटर पर अभी कोई Center Admin नियुक्त नहीं है।";
+
+    const adminSelect = document.createElement("select");
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Center Admin चुनें";
+    adminSelect.appendChild(defaultOption);
+
+    adminRows.forEach(admin => {
+      const option = document.createElement("option");
+      option.value = admin.id;
+      option.textContent = admin.full_name || admin.id;
+      adminSelect.appendChild(option);
+    });
+
+    if (admins.length) {
+      adminSelect.value = admins[0].id;
+    }
+
+    const assignButton = document.createElement("button");
+    assignButton.textContent = "Center Admin बदलें";
+    assignButton.onclick = () => updateCenterAdmin(center.id, adminSelect.value);
 
     const saveButton = document.createElement("button");
     saveButton.textContent = "सेंटर का नाम सेव करें";
     saveButton.onclick = () => updateCenterName(center.id, nameInput.value);
+
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "🗑️ सेंटर डिलीट करें";
     deleteButton.style.background = "#b42318";
     deleteButton.onclick = () => deleteCenter(center.id, center.name);
-        card.appendChild(nameInput);
+
+    card.appendChild(nameInput);
     card.appendChild(saveButton);
     card.appendChild(deleteButton);
     card.appendChild(adminInfo);
+    card.appendChild(adminSelect);
+    card.appendChild(assignButton);
+    box.appendChild(card);
+    
     box.appendChild(card);
   });
 }
