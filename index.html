@@ -834,6 +834,7 @@ async function saveJamaatInfo() {
   await loadJamaatInfo(centerId);
 }
 
+
 async function deleteJamaatInfo() {
   const centerId = jamaatAdminCenterId || centerSelect.value;
   const status = document.getElementById("jamaatInfoStatus");
@@ -853,11 +854,24 @@ async function deleteJamaatInfo() {
     return;
   }
 
+  const { error: requestError } = await supabaseClient
+    .from("jamaat_requests")
+    .delete()
+    .eq("center_id", centerId);
+
+  if (requestError) {
+    status.textContent = "जमात बंद हुई, लेकिन पुरानी रिक्वेस्ट नहीं हटीं: " + requestError.message;
+    return;
+  }
+
   document.getElementById("jamaatTitle").value = "";
   document.getElementById("jamaatMessage").value = "";
-  status.textContent = "जमात की जानकारी हटा दी गई।";
+  status.textContent = "जमात बंद हो गई और सभी पुरानी रिक्वेस्ट डिलीट हो गईं।";
+
   await loadJamaatInfo(centerId);
+  await loadJamaatAdmin(centerId);
 }
+  
 
 async function loadJamaatAdmin(centerId) {
   const box = document.getElementById("jamaatAdminList");
