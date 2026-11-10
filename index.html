@@ -1136,7 +1136,49 @@ async function loadCenterManagement() {
   });
 }
 
-async function updateCenterName(centerId, newName) {
+
+async function updateCenterAdmin(centerId, adminId) {
+  if (currentAdminRole !== "main_admin") return;
+
+  if (!adminId) {
+    alert("पहले Center Admin चुनें।");
+    return;
+  }
+
+  const ok = confirm(
+    "क्या आप इस Center Admin को इस सेंटर पर नियुक्त करना चाहते हैं? अगर वह दूसरे सेंटर पर है, तो वहाँ से उसकी नियुक्ति हट जाएगी।"
+  );
+
+  if (!ok) return;
+
+  const { error: assignError } = await supabaseClient
+    .from("profiles")
+    .update({ center_id: centerId })
+    .eq("id", adminId)
+    .eq("role", "center_admin");
+
+  if (assignError) {
+    alert("Center Admin नियुक्त नहीं हुआ: " + assignError.message);
+    return;
+  }
+
+  const { error: clearError } = await supabaseClient
+    .from("profiles")
+    .update({ center_id: null })
+    .eq("center_id", centerId)
+    .eq("role", "center_admin")
+    .neq("id", adminId);
+
+  if (clearError) {
+    alert("पुराने एडमिन को हटाने में समस्या: " + clearError.message);
+    return;
+  }
+
+  alert("Center Admin सफलतापूर्वक बदल गया!");
+  await loadCenterManagement();
+}
+  
+  async function updateCenterName(centerId, newName) {
   if (currentAdminRole !== "main_admin") return;
   const name = String(newName || "").trim();
   if (!name) {
