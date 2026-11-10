@@ -1164,38 +1164,59 @@ async function deleteCenter(centerId, centerName) {
   await loadCenters();
   await loadCenterManagement();
 }
-async function assignCenterAdmin() {
+
+async function createCenterAdmin() {
   const status = document.getElementById("centerAdminStatus");
   const centerId = document.getElementById("managedCenterSelect").value;
-  const userId = document.getElementById("centerAdminUserId").value.trim();
+  const full_name = document.getElementById("centerAdminName").value.trim();
+  const email = document.getElementById("centerAdminEmail").value.trim();
+  const password = document.getElementById("centerAdminPassword").value;
+
   if (currentAdminRole !== "main_admin") {
-    status.textContent = "सिर्फ Main Admin Center Admin नियुक्त कर सकता है।";
+    status.textContent = "सिर्फ Main Admin नया Center Admin बना सकता है।";
     return;
   }
-  if (!centerId || !userId) {
-    status.textContent = "सेंटर और Admin का User ID दोनों भरें।";
+
+  if (!centerId || !full_name || !email || !password) {
+    status.textContent = "सभी जानकारी भरें।";
     return;
   }
-  status.textContent = "Center Admin नियुक्त हो रहा है...";
-  const { data, error } = await supabaseClient
-    .from("profiles")
-    .update({ role: "center_admin", center_id: centerId })
-    .eq("id", userId)
-    .select("id")
-    .maybeSingle();
-  if (error) {
-    status.textContent = "Admin नियुक्त नहीं हुआ: " + error.message;
+
+  if (password.length < 8) {
+    status.textContent = "पासवर्ड कम से कम 8 अक्षर का होना चाहिए।";
     return;
   }
-  if (!data) {
-    status.textContent = "इस User ID का Profile नहीं मिला। पहले Auth User और profiles रिकॉर्ड बनाएँ।";
+
+  status.textContent = "Center Admin अकाउंट बनाया जा रहा है...";
+
+  const { data, error } = await supabaseClient.functions.invoke(
+    "create-center-admin",
+    {
+      body: {
+        full_name,
+        email,
+        password,
+        center_id: centerId
+      }
+    }
+  );
+
+  if (error || !data || !data.success) {
+    status.textContent =
+      "अकाउंट नहीं बना: " +
+      (data?.error || error?.message || "कृपया दोबारा कोशिश करें।");
     return;
   }
-  status.textContent = "Center Admin सफलतापूर्वक नियुक्त हो गया!";
-  document.getElementById("centerAdminUserId").value = "";
+
+  status.textContent = "Center Admin अकाउंट सफलतापूर्वक बन गया!";
+
+  document.getElementById("centerAdminName").value = "";
+  document.getElementById("centerAdminEmail").value = "";
+  document.getElementById("centerAdminPassword").value = "";
+
   await loadCenterManagement();
 }
-
+  
 async function loadCenters() {
   centerStatus.textContent = "सेंटर लोड हो रहे हैं...";
 
