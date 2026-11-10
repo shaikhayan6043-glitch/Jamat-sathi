@@ -132,6 +132,7 @@ footer{text-align:center;padding:25px;color:#718078}
   <input id="editJamaat" type="time">
 
   <button onclick="savePrayerTime()">समय सेव करें</button>
+  <button onclick="deletePrayerTime()" style="background:#b42318">🗑️ चुनी हुई नमाज़ का समय हटाएँ</button>
   <p id="prayerSaveStatus" class="status"></p>
 </div>
 <div style="margin-top:20px">
@@ -1121,7 +1122,44 @@ async function updateCenterName(centerId, newName) {
   await loadCenters();
   await loadCenterManagement();
 }
+async function deleteCenter(centerId, centerName) {
+  if (currentAdminRole !== "main_admin") {
+    alert("सिर्फ Main Admin सेंटर डिलीट कर सकता है।");
+    return;
+  }
 
+  const ok = confirm(
+    "क्या आप '" + centerName + "' सेंटर डिलीट करना चाहते हैं?\n\n" +
+    "इस सेंटर के सभी नमाज़ के समय, ऐलान, जमात की जानकारी और रिक्वेस्ट हमेशा के लिए डिलीट हो जाएँगे।"
+  );
+
+  if (!ok) return;
+
+  const { error } = await supabaseClient
+    .from("centers")
+    .delete()
+    .eq("id", centerId);
+
+  if (error) {
+    alert("सेंटर डिलीट नहीं हुआ: " + error.message);
+    return;
+  }
+
+  if (centerSelect.value === centerId) {
+    centerSelect.value = "";
+    localStorage.removeItem("jamatCenter");
+    jamaatAdminCenterId = null;
+    prayersBox.innerHTML = '<p class="status">पहले अपना सेंटर चुनें।</p>';
+    document.getElementById("announcementsList").innerHTML = "";
+    document.getElementById("jamaatInfo").innerHTML = "";
+    document.getElementById("jamaatAdminList").innerHTML = "";
+    document.getElementById("announcementAdminList").innerHTML = "";
+  }
+
+  alert("सेंटर और उससे जुड़ा डेटा डिलीट हो गया।");
+  await loadCenters();
+  await loadCenterManagement();
+}
 async function assignCenterAdmin() {
   const status = document.getElementById("centerAdminStatus");
   const centerId = document.getElementById("managedCenterSelect").value;
@@ -1588,6 +1626,76 @@ async function savePrayerTime() {
   status.textContent = "नमाज़ का समय सफलतापूर्वक सेव हो गया!";
   await loadPrayerTimes(centerId);
 }
+ async function deletePrayerTime() {
+  const status = document.getElementById("prayerSaveStatus");
+  const prayer = document.getElementById("editPrayer").value;
+
+  const { data: userData, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !userData.user) {
+    status.textContent = "पहले Admin Login करें।";
+    return;
+  }
+
+  const { data: profile, error: profileError } =
+    await supabaseClient
+      .from("profiles")
+      .select("role, center_id")
+      .eq("id", userData.user.id)
+      .single();
+
+  if (profileError || !profile ||
+      !["main_admin", "center_admin"].includes(profile.role)) {
+    status.textContent = "Admin की अनुमति नहीं मिली।";
+    return;
+  }
+
+  const centerId = profile.role === "main_admin"
+    ? centerSelect.value
+    : profile.center_id;
+
+  if (!centerId) {
+    status.textContent = "पहले सेंटर चुनें।";
+    return;
+  }
+
+  const labels = {
+    fajr: "फज्र",
+    dhuhr: "ज़ुहर",
+    asr: "असर",
+    maghrib: "मगरिब",
+    isha: "ईशा",
+    juma: "जुमा"
+  };
+
+  if (!confirm("क्या " + labels[prayer] + " का समय हटाना चाहते हैं?")) {
+    return;
+  }
+
+  status.textContent = "समय हटाया जा रहा है...";
+
+  const prayerNames = prayer === "dhuhr"
+    ? ["dhuhr", "zuhr"]
+    : [prayer];
+
+  const { error } = await supabaseClient
+    .from("prayer_times")
+    .delete()
+    .eq("center_id", centerId)
+    .in("prayer_name", prayerNames);
+
+  if (error) {
+    status.textContent = "समय नहीं हट पाया: " + error.message;
+    return;
+  }
+
+  document.getElementById("editAzan").value = "";
+  document.getElementById("editJamaat").value = "";
+  status.textContent = "चुनी हुई नमाज़ का समय हटा दिया गया।";
+
+  await loadPrayerTimes(centerId);
+ } 
 loadCenters();
 </script>
 
