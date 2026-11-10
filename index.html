@@ -52,6 +52,18 @@ footer{text-align:center;padding:25px;color:#718078}
 <option value="">सेंटर लोड हो रहे हैं...</option>
 </select>
 <p id="centerStatus" class="status">सेंटर लोड हो रहे हैं...</p>
+  
+<section class="card" style="text-align:center">
+  <button onclick="openRakatPage()">📖 नमाज़ की रकअत की जानकारी देखें</button>
+</section>
+
+<section id="rakatPage" class="card" style="display:none">
+  <button onclick="closeRakatPage()">⬅ वापस जाएँ</button>
+  <h2>📖 नमाज़ की रकअत</h2>
+  <p>हनफ़ी तरीके के अनुसार पाँच वक्त की नमाज़ और जुमा की रकअत की जानकारी।</p>
+  <div id="rakatDetails"></div>
+</section>
+  
 </section>
 
 <section class="card">
@@ -204,7 +216,71 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
-function toggleSettings() {
+
+function openRakatPage() {
+  document.getElementById("rakatPage").style.display = "block";
+
+  document.getElementById("rakatDetails").innerHTML = `
+    <div class="notice">
+      <h3>🌅 फज्र</h3>
+      सुन्नत: 2 रकअत<br>
+      फ़र्ज़: 2 रकअत
+    </div>
+
+    <div class="notice">
+      <h3>☀️ ज़ुहर</h3>
+      सुन्नत: 4 पहले<br>
+      फ़र्ज़: 4<br>
+      सुन्नत: 2 बाद में<br>
+      नफ़्ल: 2
+    </div>
+
+    <div class="notice">
+      <h3>🌤️ असर</h3>
+      सुन्नत: 4 पहले (ग़ैर मुअक्कदा)<br>
+      फ़र्ज़: 4
+    </div>
+
+    <div class="notice">
+      <h3>🌇 मगरिब</h3>
+      फ़र्ज़: 3<br>
+      सुन्नत: 2<br>
+      नफ़्ल: 2
+    </div>
+
+    <div class="notice">
+      <h3>🌙 ईशा</h3>
+      सुन्नत: 4 पहले (ग़ैर मुअक्कदा)<br>
+      फ़र्ज़: 4<br>
+      सुन्नत: 2<br>
+      नफ़्ल: 2<br>
+      वित्र: 3<br>
+      नफ़्ल: 2
+    </div>
+
+    <div class="notice">
+      <h3>🕌 जुमा</h3>
+      सुन्नत: 4 पहले<br>
+      फ़र्ज़: 2 (इमाम के पीछे)<br>
+      सुन्नत: 4 बाद में<br>
+      सुन्नत: 2 बाद में<br>
+      नफ़्ल: 2
+    </div>
+  `;
+
+  document.getElementById("rakatPage").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+function closeRakatPage() {
+  document.getElementById("rakatPage").style.display = "none";
+  document.getElementById("rakatPage").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+  
+  function toggleSettings() {
   const menu = document.getElementById("settingsMenu");
   menu.style.display =
     menu.style.display === "none" ? "block" : "none";
