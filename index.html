@@ -238,6 +238,15 @@ button, select, input {
   <button onclick="toggleLanguageMenu()">🌐 Change Language</button>
   <button disabled>＋</button>
 </div>
+  <div id="languageModal" onclick="if(event.target === this) closeLanguageMenu()">
+  <div class="language-dialog">
+    <h2>🌐 भाषा चुनें / زبان منتخب کریں</h2>
+    <button type="button" class="language-option" onclick="chooseAppLanguage('hi')">हिंदी</button>
+    <button type="button" class="language-option" onclick="chooseAppLanguage('ur')">اردو</button>
+    <button type="button" class="language-option" onclick="chooseAppLanguage('en')">English</button>
+    <button type="button" class="language-close" onclick="closeLanguageMenu()">✕ बंद करें</button>
+  </div>
+  </div>
 <main>
 
 <section class="card">
