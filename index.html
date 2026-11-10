@@ -1090,8 +1090,13 @@ async function loadCenterManagement() {
     const saveButton = document.createElement("button");
     saveButton.textContent = "सेंटर का नाम सेव करें";
     saveButton.onclick = () => updateCenterName(center.id, nameInput.value);
-    card.appendChild(nameInput);
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "🗑️ सेंटर डिलीट करें";
+    deleteButton.style.background = "#b42318";
+    deleteButton.onclick = () => deleteCenter(center.id, center.name);
+        card.appendChild(nameInput);
     card.appendChild(saveButton);
+    card.appendChild(deleteButton);
     card.appendChild(adminInfo);
     box.appendChild(card);
   });
