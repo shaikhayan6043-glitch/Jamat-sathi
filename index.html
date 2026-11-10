@@ -1151,6 +1151,30 @@ removeButton.onclick = () => removeCenterAdmin(center.id);
 }
 
 
+async function removeCenterAdmin(centerId) {
+  if (currentAdminRole !== "main_admin") return;
+
+  const ok = confirm(
+    "क्या आप इस सेंटर से मौजूदा Center Admin की नियुक्ति हटाना चाहते हैं?"
+  );
+
+  if (!ok) return;
+
+  const { error } = await supabaseClient
+    .from("profiles")
+    .update({ center_id: null })
+    .eq("center_id", centerId)
+    .eq("role", "center_admin");
+
+  if (error) {
+    alert("एडमिन नहीं हटाया गया: " + error.message);
+    return;
+  }
+
+  alert("Center Admin की नियुक्ति इस सेंटर से हटा दी गई है।");
+  await loadCenterManagement();
+}
+  
 async function updateCenterAdmin(centerId, adminId) {
   if (currentAdminRole !== "main_admin") return;
 
