@@ -1240,6 +1240,56 @@ async function updateCenterAdmin(centerId, adminId) {
   await loadCenterManagement();
 }
   
+async function resetCenterAdminPassword() {
+  if (currentAdminRole !== "main_admin") {
+    alert("सिर्फ Main Admin पासवर्ड बदल सकता है।");
+    return;
+  }
+
+  const adminId = document.getElementById("passwordAdminSelect").value;
+  const password = document.getElementById("newCenterAdminPassword").value;
+  const status = document.getElementById("passwordResetStatus");
+
+  if (!adminId) {
+    status.textContent = "पहले Center Admin चुनें।";
+    return;
+  }
+
+  if (password.length < 8) {
+    status.textContent = "पासवर्ड कम से कम 8 अक्षर का होना चाहिए।";
+    return;
+  }
+
+  if (!confirm("क्या चुने हुए Center Admin का पासवर्ड बदलना चाहते हैं?")) {
+    return;
+  }
+
+  status.textContent = "पासवर्ड बदला जा रहा है...";
+
+  const { data, error } = await supabaseClient.functions.invoke(
+    "reset-center-admin-password",
+    {
+      body: {
+        admin_user_id: adminId,
+        new_password: password
+      }
+    }
+  );
+
+  if (error) {
+    status.textContent = "पासवर्ड नहीं बदला: " + error.message;
+    return;
+  }
+
+  if (!data || !data.success) {
+    status.textContent = "पासवर्ड नहीं बदला: " + (data?.error || "अज्ञात समस्या");
+    return;
+  }
+
+  status.textContent = "Center Admin का पासवर्ड सफलतापूर्वक बदल गया!";
+  document.getElementById("newCenterAdminPassword").value = "";
+}
+  
   async function updateCenterName(centerId, newName) {
   if (currentAdminRole !== "main_admin") return;
   const name = String(newName || "").trim();
