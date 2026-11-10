@@ -456,11 +456,19 @@ function applyLanguage() {
   menuButtons[0].textContent = t.admin;
   menuButtons[1].textContent = t.language;
 
-  const headings = document.querySelectorAll("main .card h2");
-  headings[0].textContent = t.center;
-  headings[1].textContent = t.prayer;
-  headings[2].textContent = t.jamaat;
-  headings[3].textContent = t.announcements;
+  
+const headings = document.querySelectorAll("main .card h2");
+headings[0].textContent = t.center;
+headings[1].textContent = t.prayer;
+
+const jamaatHeading = document.querySelector("#jamaatInfo")
+  ?.closest("section")?.querySelector("h2");
+if (jamaatHeading) jamaatHeading.textContent = t.jamaat;
+
+const announcementHeading = document.querySelector("#announcementsList")
+  ?.closest("section")?.querySelector("h2");
+if (announcementHeading) announcementHeading.textContent = t.announcements;
+  
 
   setText("#centerStatus", t.centerLoading);
   setText("#prayers .status", t.chooseCenter);
