@@ -1201,12 +1201,23 @@ async function createCenterAdmin() {
     }
   );
 
-  if (error || !data || !data.success) {
+    if (error || !data || !data.success) {
+    let serverMessage = data?.error || "";
+
+    if (!serverMessage && error?.context) {
+      try {
+        const errorBody = await error.context.clone().json();
+        serverMessage = errorBody.error || errorBody.message || "";
+      } catch (e) {
+        serverMessage = "";
+      }
+    }
+
     status.textContent =
       "अकाउंट नहीं बना: " +
-      (data?.error || error?.message || "कृपया दोबारा कोशिश करें।");
+      (serverMessage || error?.message || "कृपया दोबारा कोशिश करें।");
     return;
-  }
+    }
 
   status.textContent = "Center Admin अकाउंट सफलतापूर्वक बन गया!";
 
