@@ -858,9 +858,9 @@ async function deleteJamaatInfo() {
   status.textContent = "जमात की जानकारी हटा दी गई।";
   await loadJamaatInfo(centerId);
 }
+
 async function loadJamaatAdmin(centerId) {
   const box = document.getElementById("jamaatAdminList");
-
   if (!box) return;
 
   box.innerHTML = "<h3>🤝 जमात में चलने की रिक्वेस्ट</h3>";
@@ -872,7 +872,7 @@ async function loadJamaatAdmin(centerId) {
 
   const { data, error } = await supabaseClient
     .from("jamaat_requests")
-    .select("id, person_name, admin_message, created_at")
+    .select("id, person_name, admin_message, created_at, status")
     .eq("center_id", centerId)
     .order("created_at", { ascending: false });
 
@@ -881,18 +881,61 @@ async function loadJamaatAdmin(centerId) {
     return;
   }
 
-  if (!data || data.length === 0) {
-    const lang = localStorage.getItem("appLanguage") || "hi";
-box.textContent = translations[lang].noRequests;
+  const requests = data || [];
+  const total = requests.length;
+  const accepted = requests.filter(x => x.status === "accepted").length;
+  const pending = total - accepted;
+
+  const summary = document.createElement("div");
+  summary.className = "notice";
+  summary.innerHTML =
+    "<b>📊 कुल रिक्वेस्ट: " + total + "</b><br>" +
+    "✅ स्वीकार की गई: " + accepted + "<br>" +
+    "⏳ Pending: " + pending;
+
+  box.appendChild(summary);
+
+  if (total === 0) {
+    const empty = document.createElement("p");
+    empty.textContent = "अभी कोई रिक्वेस्ट नहीं है।";
+    box.appendChild(empty);
     return;
   }
 
-  data.forEach(item => {
+  requests.forEach(item => {
     const card = document.createElement("div");
     card.className = "notice";
 
     const name = document.createElement("b");
     name.textContent = "पूरा नाम: " + item.person_name;
+
+    const status = document.createElement("p");
+    status.textContent = item.status === "accepted"
+      ? "स्थिति: स्वीकार की गई ✅"
+      : "स्थिति: Pending ⏳";
+
+    const statusButton = document.createElement("button");
+    statusButton.textContent = item.status === "accepted"
+      ? "⏳ Pending करें"
+      : "✅ स्वीकार करें";
+
+    statusButton.onclick = async () => {
+      const nextStatus = item.status === "accepted"
+        ? "pending"
+        : "accepted";
+
+      const { error } = await supabaseClient
+        .from("jamaat_requests")
+        .update({ status: nextStatus })
+        .eq("id", item.id);
+
+      if (error) {
+        alert("स्थिति नहीं बदली: " + error.message);
+        return;
+      }
+
+      await loadJamaatAdmin(centerId);
+    };
 
     const message = document.createElement("textarea");
     message.value = item.admin_message || "";
@@ -911,7 +954,7 @@ box.textContent = translations[lang].noRequests;
         .eq("id", item.id);
 
       if (error) {
-        alert(adminMsg("loadError") + " " + error.message);
+        alert("संदेश सेव नहीं हुआ: " + error.message);
         return;
       }
 
@@ -932,21 +975,23 @@ box.textContent = translations[lang].noRequests;
         .eq("id", item.id);
 
       if (error) {
-        alert(adminMsg("loadError") + " " + error.message);
+        alert("रिक्वेस्ट नहीं हटी: " + error.message);
         return;
       }
 
-      alert(adminMsg("deleted"));
       await loadJamaatAdmin(centerId);
     };
 
     card.appendChild(name);
+    card.appendChild(status);
+    card.appendChild(statusButton);
     card.appendChild(message);
     card.appendChild(saveButton);
     card.appendChild(deleteButton);
     box.appendChild(card);
   });
 }
+  
 async function loadAnnouncementAdmin(centerId) {
   const box = document.getElementById("announcementAdminList");
 
