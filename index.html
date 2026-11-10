@@ -1122,6 +1122,10 @@ assignInfo.textContent =
     const assignButton = document.createElement("button");
     assignButton.textContent = "Center Admin बदलें";
     assignButton.onclick = () => updateCenterAdmin(center.id, adminSelect.value);
+    const removeButton = document.createElement("button");
+removeButton.textContent = "इस सेंटर से एडमिन हटाएँ";
+removeButton.style.background = "#b42318";
+removeButton.onclick = () => removeCenterAdmin(center.id);
 
     const saveButton = document.createElement("button");
     saveButton.textContent = "सेंटर का नाम सेव करें";
@@ -1139,6 +1143,7 @@ assignInfo.textContent =
     card.appendChild(adminSelect);
     card.appendChild(assignInfo);
     card.appendChild(assignButton);
+    card.appendChild(removeButton);
     box.appendChild(card);
     
     box.appendChild(card);
