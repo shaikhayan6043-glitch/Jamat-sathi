@@ -2717,7 +2717,7 @@ async function turnOffAllPrayerAlerts() {
   }
 }
 loadPrayerAlertSettings();
-  loadCenters();
+  loadCenters().then(() => startRealtimeUpdates());
 </script>
 
 </body>
