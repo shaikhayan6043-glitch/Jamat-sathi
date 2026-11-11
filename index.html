@@ -503,6 +503,7 @@ button, select, input {
 <footer>JAMAT SATHI © 2026</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./notifications.bundle.js"></script>
 
 <script>
 const SUPABASE_URL = "https://sofxrgpprpnopodsmtkc.supabase.co";
@@ -2679,19 +2680,14 @@ async function savePrayerAlertSettings() {
   document.getElementById("prayerAlertStatus").textContent =
     "✅ सेटिंग सेव हो गई।";
 }
-async function showNotificationWelcome() {
-  try {
-    const plugin = await window.prayerNotificationsReady;
+function showNotificationWelcome() {
+  if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
 
-    if (!plugin || !window.Capacitor ||
-        !window.Capacitor.isNativePlatform()) return;
+  if (localStorage.getItem("notificationWelcomeDone") === "yes") return;
 
-    if (localStorage.getItem("notificationWelcomeDone") === "yes") return;
-
-    document.getElementById("notificationWelcome").style.display = "flex";
-  } catch (error) {
-    console.error("Notification permission check:", error);
-  }
+  const modal = document.getElementById("notificationWelcome");
+  if (modal) modal.style.display = "flex";
+}
 
 }
 
