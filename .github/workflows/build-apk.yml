@@ -38,7 +38,7 @@ jobs:
 
       - name: Sync Android project
         run: npx cap sync android
-              - name: Generate Android app icons
+      - name: Generate Android app icons
         run: |
           mkdir -p assets
           cp new-logo.png assets/icon.png
