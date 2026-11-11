@@ -2650,6 +2650,7 @@ async function savePrayerAlertSettings() {
           return;
         }
       }
+            } catch (error) {
       document.getElementById("prayerAlertStatus").textContent =
         "❌ अनुमति लेने में समस्या हुई।";
       return;
