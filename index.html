@@ -2529,6 +2529,20 @@ async function savePrayerAlertSettings() {
           "⚠️ नोटिफिकेशन की अनुमति नहीं मिली।";
         return;
       }
+          const exact = await plugin.checkExactNotificationSetting();
+
+      if (exact.exact_alarm !== "granted") {
+          if (centerSelect && centerSelect.value) {
+    await loadPrayerTimes(centerSelect.value);
+          }
+        const changed = await plugin.changeExactNotificationSetting();
+
+        if (changed.exact_alarm !== "granted") {
+          document.getElementById("prayerAlertStatus").textContent =
+            "⚠️ Alarms & reminders की अनुमति दें।";
+          return;
+        }
+      }
     } catch (error) {
       console.error(error);
       document.getElementById("prayerAlertStatus").textContent =
