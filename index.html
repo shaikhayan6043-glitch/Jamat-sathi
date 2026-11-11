@@ -2146,7 +2146,7 @@ async function schedulePrayerAlerts(data) {
           day.getDate();
 
         notifications.push({
-          id: 900000000 + dateKey * 10 + number,
+          id: 900000000 + offset * 10 + number,
           title: "🔔 JAMAT SATHI – नमाज़ अलर्ट",
           body: names[key] + " की अज़ान में 2 मिनट बाकी हैं।",
           channelId: "prayer-alerts",
