@@ -2679,22 +2679,21 @@ async function savePrayerAlertSettings() {
   document.getElementById("prayerAlertStatus").textContent =
     "✅ सेटिंग सेव हो गई।";
 }
-
 async function showNotificationWelcome() {
-  if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
-
   try {
     const plugin = await window.prayerNotificationsReady;
-    if (!plugin) return;
 
-    const permission = await plugin.checkPermissions();
+    if (!plugin || !window.Capacitor ||
+        !window.Capacitor.isNativePlatform()) return;
 
-    if (permission.display !== "granted") {
-      document.getElementById("notificationWelcome").style.display = "flex";
-    }
+    if (localStorage.getItem("notificationWelcomeDone") === "yes") return;
+
+    document.getElementById("notificationWelcome").style.display = "flex";
   } catch (error) {
     console.error("Notification permission check:", error);
   }
+}
+
 }
 
 async function enableNotificationsFromWelcome() {
@@ -2718,6 +2717,7 @@ async function enableNotificationsFromWelcome() {
     }
 
     document.getElementById("notificationWelcome").style.display = "none";
+    localStorage.setItem("notificationWelcomeDone", "yes");
 
     if (centerSelect && centerSelect.value) {
       await loadPrayerTimes(centerSelect.value);
