@@ -513,28 +513,7 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
-window.prayerNotificationsReady = (async function () {
-  try {
-    const coreModule = await import(
-      "https://cdn.jsdelivr.net/npm/@capacitor/core@8.6.0/+esm"
-    );
 
-    window.Capacitor = coreModule.Capacitor;
-
-    if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
-      return null;
-    }
-
-    const notificationModule = await import(
-      "https://cdn.jsdelivr.net/npm/@capacitor/local-notifications@8.3.1/+esm"
-    );
-
-    return notificationModule.LocalNotifications;
-  } catch (error) {
-    console.error("Notification plugin load error:", error);
-    return null;
-  }
-})();
 function openRakatPage() {
   const lang = localStorage.getItem("appLanguage") || "hi";
 
@@ -2687,8 +2666,6 @@ function showNotificationWelcome() {
 
   const modal = document.getElementById("notificationWelcome");
   if (modal) modal.style.display = "flex";
-}
-
 }
 
 async function enableNotificationsFromWelcome() {
