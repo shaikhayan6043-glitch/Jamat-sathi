@@ -313,6 +313,7 @@ button, select, input {
 </section>
 <section class="card" id="prayerAlertSection" style="display:none">
   <h2>🔔 नमाज़ अलर्ट सेटिंग्स</h2>
+  <button onclick="closePrayerAlertSettings()">⬅ वापस जाएँ</button>
   <p>अज़ान से 2 मिनट पहले अलर्ट और आवाज़</p>
 
   <div class="prayer">
@@ -615,7 +616,10 @@ function showAdminLogin() {
   const section = document.getElementById("prayerAlertSection");
   section.style.display = "block";
   section.scrollIntoView({ behavior: "smooth" });
-  }
+    function closePrayerAlertSettings() {
+  document.getElementById("prayerAlertSection").style.display = "none";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
 const translations = {
   hi: {
