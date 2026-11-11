@@ -2676,6 +2676,57 @@ async function savePrayerAlertSettings() {
   document.getElementById("prayerAlertStatus").textContent =
     "✅ सेटिंग सेव हो गई।";
 }
+
+async function showNotificationWelcome() {
+  if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
+
+  try {
+    const plugin = await window.prayerNotificationsReady;
+    if (!plugin) return;
+
+    const permission = await plugin.checkPermissions();
+
+    if (permission.display !== "granted") {
+      document.getElementById("notificationWelcome").style.display = "flex";
+    }
+  } catch (error) {
+    console.error("Notification permission check:", error);
+  }
+}
+
+async function enableNotificationsFromWelcome() {
+  try {
+    const plugin = await window.prayerNotificationsReady;
+
+    if (!plugin) {
+      alert("नोटिफिकेशन सिस्टम लोड नहीं हुआ।");
+      return;
+    }
+
+    let permission = await plugin.checkPermissions();
+
+    if (permission.display !== "granted") {
+      permission = await plugin.requestPermissions();
+    }
+
+    if (permission.display !== "granted") {
+      alert("नमाज़ अलर्ट पाने के लिए नोटिफिकेशन की अनुमति दें।");
+      return;
+    }
+
+    document.getElementById("notificationWelcome").style.display = "none";
+
+    if (centerSelect && centerSelect.value) {
+      await loadPrayerTimes(centerSelect.value);
+    } else {
+      alert("अब अपना सेंटर चुनें। सेंटर चुनते ही नमाज़ अलर्ट सेट होंगे।");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("अनुमति लेने में समस्या हुई।");
+  }
+}
+  
 function loadPrayerAlertSettings() {
   const saved = JSON.parse(localStorage.getItem("prayerAlertSettings") || "{}");
   const prayers = ["fajr", "dhuhr", "asr", "maghrib", "isha", "juma"];
