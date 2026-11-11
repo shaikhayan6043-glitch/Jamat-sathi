@@ -1883,7 +1883,98 @@ async function createCenterAdmin() {
 
   await loadCenterManagement();
 }
-  
+
+  let jamaatRealtimeChannel = null;
+
+function refreshRealtimeTable(table, payload) {
+  const changedCenterId =
+    (payload.new && payload.new.center_id) ||
+    (payload.old && payload.old.center_id) ||
+    null;
+
+  const selectedCenterId = centerSelect.value;
+  const adminPanel = document.getElementById("adminPanel");
+  const adminIsOpen = adminPanel && adminPanel.style.display !== "none";
+
+  if (table === "centers") {
+    loadCenters();
+    return;
+  }
+
+  const matchesSelectedCenter =
+    selectedCenterId &&
+    (!changedCenterId || changedCenterId === selectedCenterId);
+
+  if (table === "prayer_times" && matchesSelectedCenter) {
+    loadPrayerTimes(selectedCenterId);
+  }
+
+  if (table === "announcements" && matchesSelectedCenter) {
+    loadAnnouncements(selectedCenterId);
+    if (adminIsOpen && jamaatAdminCenterId === selectedCenterId) {
+      loadAnnouncementAdmin(selectedCenterId);
+    }
+  }
+
+  if (table === "jamaat_info" && matchesSelectedCenter) {
+    loadJamaatInfo(selectedCenterId);
+    if (adminIsOpen && jamaatAdminCenterId === selectedCenterId) {
+      loadJamaatAdminInfo(selectedCenterId);
+    }
+  }
+
+  if (table === "jamaat_requests") {
+    if (
+      adminIsOpen &&
+      currentAdminRole &&
+      jamaatAdminCenterId &&
+      (!changedCenterId || changedCenterId === jamaatAdminCenterId)
+    ) {
+      loadJamaatAdmin(jamaatAdminCenterId);
+    }
+
+    if (matchesSelectedCenter) {
+      loadJamaatReply(selectedCenterId);
+    }
+  }
+}
+
+function startRealtimeUpdates() {
+  if (jamaatRealtimeChannel) {
+    supabaseClient.removeChannel(jamaatRealtimeChannel);
+  }
+
+  jamaatRealtimeChannel = supabaseClient
+    .channel("jamat-sathi-live-updates")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "centers" },
+      payload => refreshRealtimeTable("centers", payload)
+    )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "prayer_times" },
+      payload => refreshRealtimeTable("prayer_times", payload)
+    )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "announcements" },
+      payload => refreshRealtimeTable("announcements", payload)
+    )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "jamaat_info" },
+      payload => refreshRealtimeTable("jamaat_info", payload)
+    )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "jamaat_requests" },
+      payload => refreshRealtimeTable("jamaat_requests", payload)
+    )
+    .subscribe((status, error) => {
+      console.log("JAMAT SATHI Realtime:", status, error || "");
+    });
+}
 async function loadCenters() {
   centerStatus.textContent = "सेंटर लोड हो रहे हैं...";
 
