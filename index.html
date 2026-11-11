@@ -311,7 +311,7 @@ button, select, input {
 </div>
 <small>समय आपके चुने हुए सेंटर के अनुसार दिखेगा।</small>
 </section>
-<section class="card" id="prayerAlertSection">
+<section class="card" id="prayerAlertSection" style="display:none">
   <h2>🔔 नमाज़ अलर्ट सेटिंग्स</h2>
   <p>अज़ान से 2 मिनट पहले अलर्ट और आवाज़</p>
 
@@ -345,6 +345,7 @@ button, select, input {
       <input type="checkbox" id="alert_juma" checked onchange="savePrayerAlertSettings()">
     </label>
   </div>
+  <button onclick="turnOffAllPrayerAlerts()">🔕 सभी नमाज़ के अलर्ट बंद करें</button>
   <small id="prayerAlertStatus">आपकी सेटिंग सेव हो जाएगी।</small>
 </section>
 <section class="card" style="text-align:center">
