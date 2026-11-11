@@ -2671,6 +2671,7 @@ async function savePrayerAlertSettings() {
   if (centerSelect && centerSelect.value) {
     await loadPrayerTimes(centerSelect.value);
 }
+}
 function showNotificationWelcome() {
   if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
 
