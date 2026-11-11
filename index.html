@@ -2269,8 +2269,8 @@ async function schedulePrayerAlerts(data) {
       await plugin.schedule({ notifications });
     }
 
-    const pending = await plugin.getPending();
-    const scheduledCount = (pending.notifications || []).filter(
+    const pendingAfterSchedule = await plugin.getPending();
+    const scheduledCount = (pendingAfterSchedule.notifications || []).filter(
       n => n.id >= 900000000 && n.id < 1200000000
     ).length;
 
