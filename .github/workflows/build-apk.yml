@@ -1,3 +1,4 @@
+
 name: Build JAMAT SATHI APK
 
 on:
@@ -31,6 +32,8 @@ jobs:
       - name: Prepare website files
         run: |
           mkdir -p www
+          npx esbuild notification-entry.js --bundle --format=iife --platform=browser --target=es2020 --outfile=www/notifications.bundle.js
+          node --check www/notifications.bundle.js
           cp index.html www/index.html
 
       - name: Add Android platform
@@ -38,22 +41,29 @@ jobs:
 
       - name: Sync Android project
         run: npx cap sync android
+
       - name: Generate Android app icons
         run: |
           mkdir -p assets
           cp new-logo.png assets/icon.png
           npm install --no-save @capacitor/assets
           npx capacitor-assets generate --android
-      - name: Add exact alarm permission
+
+      - name: Add notification permissions
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p = Path("android/app/src/main/AndroidManifest.xml")
           s = p.read_text()
-          permission = '    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n'
-          if "android.permission.SCHEDULE_EXACT_ALARM" not in s:
-              s = s.replace("<application", permission + "    <application", 1)
-              p.write_text(s)
+          permissions = [
+              '    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n',
+              '    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n'
+          ]
+          for permission in permissions:
+              permission_name = permission.split('"')[1]
+              if permission_name not in s:
+                  s = s.replace("<application", permission + "    <application", 1)
+          p.write_text(s)
           PY
 
       - name: Build APK
@@ -67,3 +77,4 @@ jobs:
         with:
           name: JAMAT-SATHI-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          
