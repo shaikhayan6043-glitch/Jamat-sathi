@@ -2265,11 +2265,23 @@ async function schedulePrayerAlerts(data) {
       });
     }
 
-    if (notifications.length) {
+      if (notifications.length) {
       await plugin.schedule({ notifications });
     }
 
-    console.log("Prayer alerts scheduled:", notifications.length);
+    const pending = await plugin.getPending();
+    const scheduledCount = (pending.notifications || []).filter(
+      n => n.id >= 900000000 && n.id < 1200000000
+    ).length;
+
+    const status = document.getElementById("prayerAlertStatus");
+    if (status) {
+      status.textContent = scheduledCount
+        ? "✅ फोन में " + scheduledCount + " अलर्ट शेड्यूल हैं।"
+        : "⚠️ फोन में कोई भविष्य का अलर्ट शेड्यूल नहीं मिला।";
+    }
+
+    console.log("Prayer alerts scheduled:", scheduledCount);
 
     } catch (error) {
     console.error("Prayer alert error:", error);
