@@ -2075,6 +2075,18 @@ async function schedulePrayerAlerts(data) {
     }
    const permission = await plugin.checkPermissions();
     if (permission.display !== "granted") return;
+  
+        const exact = await plugin.checkExactNotificationSetting();
+
+    if (exact.exact_alarm !== "granted") {
+      const changed = await plugin.changeExactNotificationSetting();
+
+      if (changed.exact_alarm !== "granted") {
+        document.getElementById("prayerAlertStatus").textContent =
+          "⚠️ Alarms & reminders की अनुमति दें।";
+        return;
+      }
+    }
     const saved = JSON.parse(
       localStorage.getItem("prayerAlertSettings") || "{}"
     );
