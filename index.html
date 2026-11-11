@@ -513,19 +513,22 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_KEY
 );
 window.prayerNotificationsReady = (async function () {
-  if (
-    !window.Capacitor ||
-    !window.Capacitor.isNativePlatform()
-  ) {
-    return null;
-  }
-
   try {
-    const module = await import(
+    const coreModule = await import(
+      "https://cdn.jsdelivr.net/npm/@capacitor/core@8.6.0/+esm"
+    );
+
+    window.Capacitor = coreModule.Capacitor;
+
+    if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
+      return null;
+    }
+
+    const notificationModule = await import(
       "https://cdn.jsdelivr.net/npm/@capacitor/local-notifications@8.3.1/+esm"
     );
 
-    return module.LocalNotifications;
+    return notificationModule.LocalNotifications;
   } catch (error) {
     console.error("Notification plugin load error:", error);
     return null;
