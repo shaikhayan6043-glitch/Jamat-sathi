@@ -2047,6 +2047,7 @@ async function loadPrayerTimes(centerId) {
 
     prayersBox.appendChild(item);
   });
+    await schedulePrayerAlerts(data);
 }
 async function schedulePrayerAlerts(data) {
   if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
