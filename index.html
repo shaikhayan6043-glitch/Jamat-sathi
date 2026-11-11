@@ -610,6 +610,12 @@ function showAdminLogin() {
     behavior: "smooth"
   });
 }
+  function openPrayerAlertSettings() {
+  document.getElementById("settingsMenu").style.display = "none";
+  const section = document.getElementById("prayerAlertSection");
+  section.style.display = "block";
+  section.scrollIntoView({ behavior: "smooth" });
+  }
 
 const translations = {
   hi: {
@@ -2574,7 +2580,46 @@ function loadPrayerAlertSettings() {
     }
   });
 }
+async function turnOffAllPrayerAlerts() {
+  const prayers = ["fajr", "dhuhr", "asr", "maghrib", "isha", "juma"];
 
+  prayers.forEach(prayer => {
+    document.getElementById("alert_" + prayer).checked = false;
+  });
+
+  localStorage.setItem("prayerAlertSettings", JSON.stringify({
+    fajr: false,
+    dhuhr: false,
+    asr: false,
+    maghrib: false,
+    isha: false,
+    juma: false
+  }));
+
+  try {
+    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+      const plugin = await window.prayerNotificationsReady;
+
+      if (plugin) {
+        const pending = await plugin.getPending();
+        const oldAlerts = (pending.notifications || [])
+          .filter(n => n.id >= 900000000 && n.id < 1200000000)
+          .map(n => ({ id: n.id }));
+
+        if (oldAlerts.length) {
+          await plugin.cancel({ notifications: oldAlerts });
+        }
+      }
+    }
+
+    document.getElementById("prayerAlertStatus").textContent =
+      "🔕 सभी नमाज़ के अलर्ट बंद कर दिए गए हैं।";
+  } catch (error) {
+    console.error(error);
+    document.getElementById("prayerAlertStatus").textContent =
+      "⚠️ अलर्ट बंद करने में समस्या हुई।";
+  }
+}
 loadPrayerAlertSettings();
   loadCenters();
 </script>
