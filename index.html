@@ -311,7 +311,42 @@ button, select, input {
 </div>
 <small>समय आपके चुने हुए सेंटर के अनुसार दिखेगा।</small>
 </section>
-  
+<section class="card" id="prayerAlertSection">
+  <h2>🔔 नमाज़ अलर्ट सेटिंग्स</h2>
+  <p>अज़ान से 2 मिनट पहले अलर्ट और आवाज़</p>
+
+  <div class="prayer">
+    <label>🌅 फज्र
+      <input type="checkbox" id="alert_fajr" checked onchange="savePrayerAlertSettings()">
+    </label>
+  </div>
+  <div class="prayer">
+    <label>☀️ ज़ुहर
+      <input type="checkbox" id="alert_dhuhr" checked onchange="savePrayerAlertSettings()">
+    </label>
+  </div>
+  <div class="prayer">
+    <label>🌤️ असर
+      <input type="checkbox" id="alert_asr" checked onchange="savePrayerAlertSettings()">
+    </label>
+  </div>
+  <div class="prayer">
+    <label>🌇 मगरिब
+      <input type="checkbox" id="alert_maghrib" checked onchange="savePrayerAlertSettings()">
+    </label>
+  </div>
+  <div class="prayer">
+    <label>🌙 ईशा
+      <input type="checkbox" id="alert_isha" checked onchange="savePrayerAlertSettings()">
+    </label>
+  </div>
+  <div class="prayer">
+    <label>🕌 जुमा
+      <input type="checkbox" id="alert_juma" checked onchange="savePrayerAlertSettings()">
+    </label>
+  </div>
+  <small id="prayerAlertStatus">आपकी सेटिंग सेव हो जाएगी।</small>
+</section>
 <section class="card" style="text-align:center">
   <button onclick="openRakatPage()">📖 नमाज़ की रकअत की जानकारी देखें</button>
 </section>
@@ -2323,7 +2358,31 @@ async function savePrayerTime() {
 
   await loadPrayerTimes(centerId);
  } 
-loadCenters();
+function savePrayerAlertSettings() {
+  const prayers = ["fajr", "dhuhr", "asr", "maghrib", "isha", "juma"];
+  const settings = {};
+
+  prayers.forEach(prayer => {
+    settings[prayer] = document.getElementById("alert_" + prayer).checked;
+  });
+
+  localStorage.setItem("prayerAlertSettings", JSON.stringify(settings));
+  document.getElementById("prayerAlertStatus").textContent = "✅ सेटिंग सेव हो गई।";
+}
+
+function loadPrayerAlertSettings() {
+  const saved = JSON.parse(localStorage.getItem("prayerAlertSettings") || "{}");
+  const prayers = ["fajr", "dhuhr", "asr", "maghrib", "isha", "juma"];
+
+  prayers.forEach(prayer => {
+    if (saved[prayer] !== undefined) {
+      document.getElementById("alert_" + prayer).checked = saved[prayer];
+    }
+  });
+}
+
+loadPrayerAlertSettings();
+  loadCenters();
 </script>
 
 </body>
