@@ -38,6 +38,12 @@ jobs:
 
       - name: Sync Android project
         run: npx cap sync android
+              - name: Generate Android app icons
+        run: |
+          mkdir -p assets
+          cp new-logo.png assets/icon.png
+          npm install --no-save @capacitor/assets
+          npx capacitor-assets generate --android
       - name: Add exact alarm permission
         run: |
           python3 - <<'PY'
