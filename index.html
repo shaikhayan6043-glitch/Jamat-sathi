@@ -2657,9 +2657,6 @@ async function savePrayerAlertSettings() {
   }
   if (centerSelect && centerSelect.value) {
     await loadPrayerTimes(centerSelect.value);
-  }
-  document.getElementById("prayerAlertStatus").textContent =
-    "✅ सेटिंग सेव हो गई।";
 }
 function showNotificationWelcome() {
   if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
