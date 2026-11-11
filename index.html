@@ -2532,9 +2532,6 @@ async function savePrayerAlertSettings() {
           const exact = await plugin.checkExactNotificationSetting();
 
       if (exact.exact_alarm !== "granted") {
-          if (centerSelect && centerSelect.value) {
-    await loadPrayerTimes(centerSelect.value);
-          }
         const changed = await plugin.changeExactNotificationSetting();
 
         if (changed.exact_alarm !== "granted") {
@@ -2550,7 +2547,9 @@ async function savePrayerAlertSettings() {
       return;
     }
   }
-
+  if (centerSelect && centerSelect.value) {
+    await loadPrayerTimes(centerSelect.value);
+  }
   document.getElementById("prayerAlertStatus").textContent =
     "✅ सेटिंग सेव हो गई।";
 }
