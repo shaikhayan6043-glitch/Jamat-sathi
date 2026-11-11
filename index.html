@@ -2048,7 +2048,126 @@ async function loadPrayerTimes(centerId) {
     prayersBox.appendChild(item);
   });
 }
+async function schedulePrayerAlerts(data) {
+  if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
 
+  try {
+    const plugin = await window.prayerNotificationsReady;
+    if (!plugin) return;
+
+    const permission = await plugin.checkPermissions();
+    if (permission.display !== "granted") return;
+
+    await plugin.createChannel({
+      id: "prayer-alerts",
+      name: "Namaz Alerts",
+      description: "Azan se 2 minute pehle notification",
+      importance: 4,
+      sound: "default",
+      vibration: true
+    });
+
+    const pending = await plugin.getPending();
+    const oldAlerts = (pending.notifications || [])
+      .filter(n => n.id >= 900000000 && n.id < 1200000000)
+      .map(n => ({ id: n.id }));
+
+    if (oldAlerts.length) {
+      await plugin.cancel({ notifications: oldAlerts });
+    }
+
+    const saved = JSON.parse(
+      localStorage.getItem("prayerAlertSettings") || "{}"
+    );
+
+    const enabled = prayer =>
+      saved[prayer] !== false;
+
+    const names = {
+      fajr: "फज्र",
+      dhuhr: "ज़ुहर",
+      asr: "असर",
+      maghrib: "मगरिब",
+      isha: "ईशा",
+      juma: "जुमा"
+    };
+
+    const normalized = {};
+
+    (data || []).forEach(row => {
+      const key = String(row.prayer_name || "").trim().toLowerCase();
+      normalized[key] = row.azan_time;
+    });
+
+    const notifications = [];
+
+    for (let offset = 0; offset < 30; offset++) {
+      const day = new Date();
+      day.setHours(0, 0, 0, 0);
+      day.setDate(day.getDate() + offset);
+
+      const friday = day.getDay() === 5;
+
+      const prayers = [
+        ["fajr", "fajr", 1],
+        [friday ? "juma" : "dhuhr",
+          friday ? "juma" : (normalized.dhuhr ? "dhuhr" : "zuhr"), 2],
+        ["asr", "asr", 3],
+        ["maghrib", "maghrib", 4],
+        ["isha", "isha", 5]
+      ];
+
+      prayers.forEach(([key, timeKey, number]) => {
+        if (!enabled(key) || !normalized[timeKey]) return;
+
+        const parts = String(normalized[timeKey]).split(":");
+        const hour = Number(parts[0]);
+        const minute = Number(parts[1]);
+
+        if (!Number.isFinite(hour) || !Number.isFinite(minute)) return;
+
+        const at = new Date(
+          day.getFullYear(),
+          day.getMonth(),
+          day.getDate(),
+          hour,
+          minute,
+          0
+        );
+
+        at.setMinutes(at.getMinutes() - 2);
+
+        if (at <= new Date()) return;
+
+        const dateKey =
+          day.getFullYear() * 10000 +
+          (day.getMonth() + 1) * 100 +
+          day.getDate();
+
+        notifications.push({
+          id: 900000000 + dateKey * 10 + number,
+          title: "🔔 JAMAT SATHI – नमाज़ अलर्ट",
+          body: names[key] + " की अज़ान में 2 मिनट बाकी हैं।",
+          channelId: "prayer-alerts",
+          schedule: {
+            at: at,
+            allowWhileIdle: true
+          },
+          sound: "default"
+        });
+      });
+    }
+
+    if (notifications.length) {
+      await plugin.schedule({ notifications });
+    }
+
+    console.log("Prayer alerts scheduled:", notifications.length);
+
+  } catch (error) {
+    console.error("Prayer alert error:", error);
+  }
+}
 async function joinJamaat() {
   const name = document.getElementById("person").value.trim();
   const centerId = centerSelect.value;
