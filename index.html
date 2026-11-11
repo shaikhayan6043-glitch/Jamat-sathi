@@ -2376,7 +2376,7 @@ async function savePrayerTime() {
 
   await loadPrayerTimes(centerId);
  } 
-function savePrayerAlertSettings() {
+async function savePrayerAlertSettings() {
   const prayers = ["fajr", "dhuhr", "asr", "maghrib", "isha", "juma"];
   const settings = {};
 
@@ -2385,9 +2385,41 @@ function savePrayerAlertSettings() {
   });
 
   localStorage.setItem("prayerAlertSettings", JSON.stringify(settings));
-  document.getElementById("prayerAlertStatus").textContent = "✅ सेटिंग सेव हो गई।";
-}
 
+  const enabled = prayers.some(prayer => settings[prayer]);
+
+  if (enabled && window.Capacitor && window.Capacitor.isNativePlatform()) {
+    try {
+      const plugin = await window.prayerNotificationsReady;
+
+      if (!plugin) {
+        document.getElementById("prayerAlertStatus").textContent =
+          "❌ नोटिफिकेशन प्लगइन लोड नहीं हुआ।";
+        return;
+      }
+
+      let permission = await plugin.checkPermissions();
+
+      if (permission.display !== "granted") {
+        permission = await plugin.requestPermissions();
+      }
+
+      if (permission.display !== "granted") {
+        document.getElementById("prayerAlertStatus").textContent =
+          "⚠️ नोटिफिकेशन की अनुमति नहीं मिली।";
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      document.getElementById("prayerAlertStatus").textContent =
+        "❌ अनुमति लेने में समस्या हुई।";
+      return;
+    }
+  }
+
+  document.getElementById("prayerAlertStatus").textContent =
+    "✅ सेटिंग सेव हो गई।";
+}
 function loadPrayerAlertSettings() {
   const saved = JSON.parse(localStorage.getItem("prayerAlertSettings") || "{}");
   const prayers = ["fajr", "dhuhr", "asr", "maghrib", "isha", "juma"];
