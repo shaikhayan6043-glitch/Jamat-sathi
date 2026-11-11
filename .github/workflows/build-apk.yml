@@ -38,7 +38,7 @@ jobs:
 
       - name: Sync Android project
         run: npx cap sync android
-              - name: Add exact alarm permission
+      - name: Add exact alarm permission
         run: |
           python3 - <<'PY'
           from pathlib import Path
