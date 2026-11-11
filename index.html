@@ -2271,8 +2271,12 @@ async function schedulePrayerAlerts(data) {
 
     console.log("Prayer alerts scheduled:", notifications.length);
 
-  } catch (error) {
+    } catch (error) {
     console.error("Prayer alert error:", error);
+    const status = document.getElementById("prayerAlertStatus");
+    if (status) {
+      status.textContent = "❌ अलर्ट में समस्या: " + (error.message || error);
+    }
   }
 }
 async function joinJamaat() {
