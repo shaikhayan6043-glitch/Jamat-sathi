@@ -2056,9 +2056,6 @@ async function schedulePrayerAlerts(data) {
     const plugin = await window.prayerNotificationsReady;
     if (!plugin) return;
 
-    const permission = await plugin.checkPermissions();
-    if (permission.display !== "granted") return;
-
     await plugin.createChannel({
       id: "prayer-alerts",
       name: "Namaz Alerts",
@@ -2076,7 +2073,8 @@ async function schedulePrayerAlerts(data) {
     if (oldAlerts.length) {
       await plugin.cancel({ notifications: oldAlerts });
     }
-
+   const permission = await plugin.checkPermissions();
+    if (permission.display !== "granted") return;
     const saved = JSON.parse(
       localStorage.getItem("prayerAlertSettings") || "{}"
     );
