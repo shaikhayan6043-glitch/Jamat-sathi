@@ -2672,6 +2672,7 @@ async function enableNotificationsFromWelcome() {
   try {
     alert("बटन का क्लिक मिल गया।");
     const plugin = await window.prayerNotificationsReady;
+    alert("प्लगइन लोड हो गया।");
 
     if (!plugin) {
       alert("नोटिफिकेशन सिस्टम लोड नहीं हुआ।");
