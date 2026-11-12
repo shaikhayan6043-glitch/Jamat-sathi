@@ -2145,19 +2145,46 @@ async function loadPrayerTimes(centerId) {
   });
     await schedulePrayerAlerts(data);
 }
-async function schedulePrayerAlerts(data) {
-  if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
+ async function schedulePrayerAlerts(data) {
+  const status = document.getElementById("prayerAlertStatus");
+
+  const showStatus = message => {
+    if (status) status.textContent = message;
+  };
+
+  if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
+    showStatus("❌ Android नोटिफिकेशन सिस्टम नहीं मिला।");
+    return;
+  }
 
   try {
     const plugin = await window.prayerNotificationsReady;
-    if (!plugin) return;
+
+    if (!plugin) {
+      showStatus("❌ नोटिफिकेशन प्लगइन नहीं मिला।");
+      return;
+    }
+
+    const permission = await plugin.checkPermissions();
+
+    if (permission.display !== "granted") {
+      showStatus("⚠️ फोन की Notifications अनुमति चालू करें।");
+      return;
+    }
+
+    const exact = await plugin.checkExactNotificationSetting();
+
+    if (exact.exact_alarm !== "granted") {
+      showStatus("⚠️ Alarms & reminders की अनुमति चालू करें।");
+      return;
+    }
 
     await plugin.createChannel({
-      id: "prayer-alerts",
-      name: "Namaz Alerts",
-      description: "Azan se 2 minute pehle notification",
+      id: "prayer-alerts-v2",
+      name: "JAMAT SATHI Namaz Alerts",
+      description: "नमाज़ से 2 मिनट पहले अलर्ट",
       importance: 4,
-      sound: "default",
+      sound: "jamat_alert.wav",
       vibration: true
     });
 
@@ -2169,26 +2196,12 @@ async function schedulePrayerAlerts(data) {
     if (oldAlerts.length) {
       await plugin.cancel({ notifications: oldAlerts });
     }
-   const permission = await plugin.checkPermissions();
-    if (permission.display !== "granted") return;
-  
-        const exact = await plugin.checkExactNotificationSetting();
 
-    if (exact.exact_alarm !== "granted") {
-      const changed = await plugin.changeExactNotificationSetting();
-
-      if (changed.exact_alarm !== "granted") {
-        document.getElementById("prayerAlertStatus").textContent =
-          "⚠️ Alarms & reminders की अनुमति दें।";
-        return;
-      }
-    }
     const saved = JSON.parse(
       localStorage.getItem("prayerAlertSettings") || "{}"
     );
 
-    const enabled = prayer =>
-      saved[prayer] !== false;
+    const enabled = prayer => saved[prayer] !== false;
 
     const names = {
       fajr: "फज्र",
@@ -2246,51 +2259,44 @@ async function schedulePrayerAlerts(data) {
 
         if (at <= new Date()) return;
 
-        const dateKey =
-          day.getFullYear() * 10000 +
-          (day.getMonth() + 1) * 100 +
-          day.getDate();
-
         notifications.push({
           id: 900000000 + offset * 10 + number,
           title: "🔔 JAMAT SATHI – नमाज़ अलर्ट",
           body: names[key] + " की अज़ान में 2 मिनट बाकी हैं।",
-          channelId: "prayer-alerts",
+          channelId: "prayer-alerts-v2",
           schedule: {
             at: at,
-            allowWhileIdle: true
+            allowWhileIdle: true,
+            isExact: true
           },
-          sound: "default"
+          sound: "jamat_alert.wav"
         });
       });
     }
 
-      if (notifications.length) {
-      await plugin.schedule({ notifications });
+    if (!notifications.length) {
+      showStatus("⚠️ कोई भविष्य का अलर्ट नहीं मिला।");
+      return;
     }
 
-    const pendingAfterSchedule = await plugin.getPending();
-    const scheduledCount = (pendingAfterSchedule.notifications || []).filter(
+    await plugin.schedule({ notifications });
+
+    const after = await plugin.getPending();
+    const count = (after.notifications || []).filter(
       n => n.id >= 900000000 && n.id < 1200000000
     ).length;
 
-    const status = document.getElementById("prayerAlertStatus");
-    if (status) {
-      status.textContent = scheduledCount
-        ? "✅ फोन में " + scheduledCount + " अलर्ट शेड्यूल हैं।"
-        : "⚠️ फोन में कोई भविष्य का अलर्ट शेड्यूल नहीं मिला।";
-    }
+    showStatus(
+      count
+        ? "✅ फोन में " + count + " नमाज़ अलर्ट शेड्यूल हैं।"
+        : "⚠️ अलर्ट शेड्यूल नहीं हुए।"
+    );
 
-    console.log("Prayer alerts scheduled:", scheduledCount);
-
-    } catch (error) {
+  } catch (error) {
     console.error("Prayer alert error:", error);
-    const status = document.getElementById("prayerAlertStatus");
-    if (status) {
-      status.textContent = "❌ अलर्ट में समस्या: " + (error.message || error);
-    }
+    showStatus("❌ अलर्ट की समस्या: " + (error.message || error));
   }
-}
+ } 
 async function joinJamaat() {
   const name = document.getElementById("person").value.trim();
   const centerId = centerSelect.value;
