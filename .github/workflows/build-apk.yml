@@ -69,7 +69,7 @@ jobs:
               raise SystemExit("MainActivity.java नहीं मिली")
 
           content = main.read_text()
-                   imports = [
+            imports = [
               "import com.jamatsathi.app.PrayerSpeechPlugin;",
            "import com.jamatsathi.app.AnnouncementTranslationPlugin;"
           ]
