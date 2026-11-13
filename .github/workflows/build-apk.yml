@@ -71,7 +71,6 @@ jobs:
 
           imports = [
               "import com.jamatsathi.app.PrayerSpeechPlugin;",
-              "import com.jamatsathi.app.AnnouncementTranslationPlugin;"
           ]
 
           for import_line in imports:
