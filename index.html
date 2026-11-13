@@ -1505,7 +1505,8 @@ editButton.textContent = translations[lang].editAnnouncement;
     box.appendChild(card);
   });
 }
-  function speakAnnouncement(title, message) {
+  
+async function speakAnnouncement(title, message) {
   if (!("speechSynthesis" in window)) {
     alert("आपके फोन में हिंदी आवाज़ की सुविधा उपलब्ध नहीं है।");
     return;
@@ -1513,16 +1514,35 @@ editButton.textContent = translations[lang].editAnnouncement;
 
   window.speechSynthesis.cancel();
 
-  const speech = new SpeechSynthesisUtterance(
-    title + "। " + message
-  );
+  let announcementText = title + "। " + message;
 
-  speech.lang = "hi-IN";
-  speech.rate = 0.9;
-  speech.pitch = 1;
+  try {
+    if (/[A-Za-z]/.test(announcementText)) {
+      if (!window.AnnouncementTranslation) {
+        throw new Error("अनुवाद सुविधा उपलब्ध नहीं है।");
+      }
 
-  window.speechSynthesis.speak(speech);
+      const result = await window.AnnouncementTranslation.translateToHindi({
+        text: announcementText
+      });
+
+      announcementText = result.text;
+    }
+
+    const speech = new SpeechSynthesisUtterance(announcementText);
+
+    speech.lang = "hi-IN";
+    speech.rate = 0.9;
+    speech.pitch = 1;
+
+    window.speechSynthesis.speak(speech);
+
+  } catch (error) {
+    alert("हिंदी अनुवाद नहीं हो पाया। इंटरनेट चालू करके दोबारा कोशिश करें।");
+    console.error(error);
   }
+}
+  
 async function loadAnnouncements(centerId) {
   const box = document.getElementById("announcementsList");
 
