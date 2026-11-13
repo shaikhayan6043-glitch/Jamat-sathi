@@ -69,24 +69,29 @@ jobs:
               raise SystemExit("MainActivity.java नहीं मिली")
 
           content = main.read_text()
+                   imports = [
+              "import com.jamatsathi.app.PrayerSpeechPlugin;",
+              "import com.jamatsathi.app.AnnouncementTranslationPlugin;"
+          ]
 
-          if "PrayerSpeechPlugin" not in content:
-              content = content.replace(
-                  "import com.getcapacitor.BridgeActivity;",
-                  "import com.getcapacitor.BridgeActivity;\n"
-                  "import com.jamatsathi.app.PrayerSpeechPlugin;"
-              )
+          for import_line in imports:
+              if import_line not in content:
+                  content = content.replace(
+                      "import com.getcapacitor.BridgeActivity;",
+                      "import com.getcapacitor.BridgeActivity;\n" + import_line
+                  )
 
+          if "registerPlugin(PrayerSpeechPlugin.class)" not in content:
               content = content.replace(
                   "public class MainActivity extends BridgeActivity {",
                   "public class MainActivity extends BridgeActivity {\n"
                   "    @Override\n"
                   "    public void onCreate(android.os.Bundle savedInstanceState) {\n"
                   "        registerPlugin(PrayerSpeechPlugin.class);\n"
+                  "        registerPlugin(AnnouncementTranslationPlugin.class);\n"
                   "        super.onCreate(savedInstanceState);\n"
                   "    }"
               )
-
           main.write_text(content)
 
           manifest = Path("android/app/src/main/AndroidManifest.xml")
