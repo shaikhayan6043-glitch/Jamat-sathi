@@ -2506,6 +2506,65 @@ await loadJamaatAdmin(announcementCenterId);
 await loadJamaatAdminInfo(announcementCenterId);
   status.textContent = "लॉगिन सफल!";
 }
+  
+async function restoreAdminSession() {
+  const status = document.getElementById("adminStatus");
+
+  try {
+    const { data: { session }, error } =
+      await supabaseClient.auth.getSession();
+
+    if (error || !session) return;
+
+    const { data: profile, error: profileError } =
+      await supabaseClient
+        .from("profiles")
+        .select("full_name, role, center_id")
+        .eq("id", session.user.id)
+        .single();
+
+    if (
+      profileError ||
+      !profile ||
+      !["main_admin", "center_admin"].includes(profile.role)
+    ) {
+      await supabaseClient.auth.signOut();
+      return;
+    }
+
+    currentAdminRole = profile.role;
+
+    document.getElementById("centerManagement").style.display =
+      profile.role === "main_admin" ? "block" : "none";
+
+    document.getElementById("adminPanel").style.display = "block";
+
+    document.getElementById("adminWelcome").textContent =
+      "स्वागत है " + profile.full_name + " (" + profile.role + ")";
+
+    document.getElementById("adminLogoutButton").style.display = "block";
+
+    const announcementCenterId =
+      profile.role === "main_admin"
+        ? centerSelect.value
+        : profile.center_id;
+
+    jamaatAdminCenterId = announcementCenterId;
+
+    if (profile.role === "main_admin") {
+      await loadCenterManagement();
+    }
+
+    await loadAnnouncementAdmin(announcementCenterId);
+    await loadJamaatAdmin(announcementCenterId);
+    await loadJamaatAdminInfo(announcementCenterId);
+
+    status.textContent = "✅ आपका पुराना Admin Login वापस आ गया!";
+  } catch (error) {
+    console.error("Admin session restore error:", error);
+  }
+}
+  
 
 async function adminLogout() {
   await supabaseClient.auth.signOut();
