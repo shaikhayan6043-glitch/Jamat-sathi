@@ -68,7 +68,7 @@ jobs:
           if not main.exists():
               raise SystemExit("MainActivity.java नहीं मिली")
 
-                    content = main.read_text()
+             content = main.read_text()
 
           imports = [
               "import com.jamatsathi.app.PrayerSpeechPlugin;",
