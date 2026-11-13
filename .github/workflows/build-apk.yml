@@ -95,10 +95,11 @@ jobs:
           manifest = Path("android/app/src/main/AndroidManifest.xml")
           xml = manifest.read_text()
 
-          permissions = [
+                    permissions = [
               '    <uses-permission android:name="android.permission.WAKE_LOCK" />',
               '    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />',
-              '    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />'
+              '    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />',
+              '    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />'
           ]
 
           for permission in permissions:
@@ -108,7 +109,6 @@ jobs:
                       "<application",
                       permission + "\n    <application",
                       1
-                      '    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />',
                   )
 
           components = """
