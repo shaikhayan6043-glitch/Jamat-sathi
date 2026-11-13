@@ -2740,13 +2740,10 @@ async function showNotificationWelcome() {
     modal.style.display = "flex";
   }
 }
-  
 
 async function enableNotificationsFromWelcome() {
   try {
-    alert("बटन का क्लिक मिल गया।");
     const plugin = window.LocalNotifications;
-    alert("प्लगइन लोड हो गया।");
 
     if (!plugin) {
       alert("नोटिफिकेशन सिस्टम लोड नहीं हुआ।");
@@ -2760,7 +2757,18 @@ async function enableNotificationsFromWelcome() {
     }
 
     if (permission.display !== "granted") {
-      alert("नमाज़ अलर्ट पाने के लिए नोटिफिकेशन की अनुमति दें।");
+      alert("नमाज़ अलर्ट के लिए Notifications की अनुमति दें।");
+      return;
+    }
+
+    let exact = await plugin.checkExactNotificationSetting();
+
+    if (exact.exact_alarm !== "granted") {
+      exact = await plugin.changeExactNotificationSetting();
+    }
+
+    if (exact.exact_alarm !== "granted") {
+      alert("Alarms & reminders की अनुमति चालू करके वापस ऐप में आएँ।");
       return;
     }
 
