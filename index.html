@@ -2888,11 +2888,12 @@ async function showNotificationWelcome() {
 
     const permission = await plugin.checkPermissions();
     const exact = await plugin.checkExactNotificationSetting();
-
     if (
       permission.display !== "granted" ||
-      exact.exact_alarm !== "granted"
+      exact.exact_alarm !== "granted" ||
+      localStorage.getItem("batteryOptimizationPrompted") !== "yes"
     ) {
+
       modal.style.display = "flex";
     } else {
       localStorage.setItem("notificationWelcomeDone", "yes");
