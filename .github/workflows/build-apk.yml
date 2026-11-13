@@ -71,7 +71,7 @@ jobs:
           content = main.read_text()
                    imports = [
               "import com.jamatsathi.app.PrayerSpeechPlugin;",
-              "import com.jamatsathi.app.AnnouncementTranslationPlugin;"
+           "import com.jamatsathi.app.AnnouncementTranslationPlugin;"
           ]
 
           for import_line in imports:
