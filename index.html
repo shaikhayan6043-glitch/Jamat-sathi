@@ -2350,7 +2350,7 @@ const voiceAlarms = [];
         notifications.push({
           id: 900000000 + offset * 10 + number,
           title: "🔔 JAMAT SATHI – नमाज़ अलर्ट",
-          body: names[key] + " की अज़ान में 2 मिनट बाकी हैं।",
+          body: names[key] + " की अज़ान में 5 मिनट बाकी हैं।",
           channelId: "prayer-alerts-v2",
           schedule: {
             at: at,
@@ -2364,7 +2364,7 @@ const voiceAlarms = [];
           at: at.getTime(),
           message:
             "ध्यान दीजिए! " + names[key] +
-            " की नमाज़ में दो मिनट बाकी हैं। " +
+            " की नमाज़ में पाँच मिनट बाकी हैं। " +
             "सभी हजरात नमाज़ को जाने की फिक्र करें।"
         });
       });
