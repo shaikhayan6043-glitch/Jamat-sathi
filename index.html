@@ -2143,7 +2143,7 @@ async function loadPrayerTimes(centerId) {
 
     prayersBox.appendChild(item);
   });
-    await schedulePrayerAlerts(data);
+    schedulePrayerAlerts(data);
 }
  async function schedulePrayerAlerts(data) {
   const status = document.getElementById("prayerAlertStatus");
