@@ -1505,6 +1505,24 @@ editButton.textContent = translations[lang].editAnnouncement;
     box.appendChild(card);
   });
 }
+  function speakAnnouncement(title, message) {
+  if (!("speechSynthesis" in window)) {
+    alert("आपके फोन में हिंदी आवाज़ की सुविधा उपलब्ध नहीं है।");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(
+    title + "। " + message
+  );
+
+  speech.lang = "hi-IN";
+  speech.rate = 0.9;
+  speech.pitch = 1;
+
+  window.speechSynthesis.speak(speech);
+  }
 async function loadAnnouncements(centerId) {
   const box = document.getElementById("announcementsList");
 
