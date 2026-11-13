@@ -2184,7 +2184,7 @@ async function loadPrayerTimes(centerId) {
       name: "JAMAT SATHI Namaz Alerts",
       description: "नमाज़ से 2 मिनट पहले अलर्ट",
       importance: 4,
-      sound: "jamat_alert.wav",
+      sound: "jamat_alert",
       vibration: true
     });
 
@@ -2267,7 +2267,7 @@ async function loadPrayerTimes(centerId) {
           schedule: {
             at: at,
             allowWhileIdle: true,
-            isExact: true
+            isExactNotification: true
           },
           sound: "jamat_alert.wav"
         });
