@@ -2283,6 +2283,14 @@ const voiceAlarms = [];
           },
           sound: "jamat_alert.wav"
         });
+                voiceAlarms.push({
+          id: 800000000 + offset * 10 + number,
+          at: at.getTime(),
+          message:
+            "ध्यान दीजिए! " + names[key] +
+            " की नमाज़ में दो मिनट बाकी हैं। " +
+            "सभी हजरात नमाज़ को जाने की फिक्र करें।"
+        });
       });
     }
 
