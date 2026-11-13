@@ -14,4 +14,3 @@ window.prayerNotificationsReady = Promise.resolve(
 
 // नया हिंदी आवाज़ वाला Android प्लगइन
 window.PrayerSpeech = registerPlugin("PrayerSpeech");
-window.AnnouncementTranslation = registerPlugin("AnnouncementTranslation");
