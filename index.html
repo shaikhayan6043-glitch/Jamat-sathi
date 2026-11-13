@@ -2069,23 +2069,34 @@ async function loadPrayerTimes(centerId) {
     return;
   }
 
+  
   const isFriday = new Date().getDay() === 5;
+
+  const fridayJumaRows = (data || []).filter(row =>
+    String(row.prayer_name || "").trim().toLowerCase() === "juma"
+  );
+
+  const fridayJuma =
+    fridayJumaRows.find(row => row.jamaat_time === "13:45:00") ||
+    fridayJumaRows[0];
 
   const rows = (data || []).filter(row => {
     const name = String(row.prayer_name || "")
       .trim().toLowerCase();
 
     if (isFriday) {
-      return name !== "dhuhr" && name !== "zuhr";
+      if (name === "dhuhr" || name === "zuhr") return false;
+      if (name === "juma") return row === fridayJuma;
+      return true;
     }
 
     return name !== "juma";
   });
 
-  const order = [
-    "fajr", "dhuhr", "zuhr",
-    "asr", "maghrib", "isha", "juma"
-  ];
+  const order = isFriday
+    ? ["fajr", "juma", "asr", "maghrib", "isha"]
+    : ["fajr", "dhuhr", "zuhr", "asr", "maghrib", "isha"];
+  
 
   rows.sort((a, b) => {
     const aName = String(a.prayer_name).trim().toLowerCase();
