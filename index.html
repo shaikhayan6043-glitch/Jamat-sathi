@@ -338,7 +338,7 @@ button, select, input {
 <div id="notificationWelcome" style="display:none;position:fixed;inset:0;z-index:10000;background:#0009;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fffaf0;padding:24px;border-radius:18px;border:2px solid #c9a64b;width:100%;max-width:380px;text-align:center">
     <h2>🔔 नमाज़ अलर्ट चालू करें</h2>
-    <p>हर नमाज़ की अज़ान से 2 मिनट पहले अपने मोबाइल पर नोटिफिकेशन पाएँ।</p>
+    <p>हर नमाज़ की अज़ान से 5 मिनट पहले अपने मोबाइल पर नोटिफिकेशन पाएँ।</p>
     <button onclick="enableNotificationsFromWelcome()">🔔 नोटिफिकेशन चालू करें</button>
     <p style="font-size:13px;color:#60766b">आप चाहें तो बाद में भी इसे चालू कर सकते हैं।</p>
   </div>
@@ -379,7 +379,7 @@ button, select, input {
 <section class="card" id="prayerAlertSection" style="display:none">
   <h2>🔔 नमाज़ अलर्ट सेटिंग्स</h2>
   <button onclick="closePrayerAlertSettings()">⬅ वापस जाएँ</button>
-  <p>अज़ान से 2 मिनट पहले अलर्ट और आवाज़</p>
+  <p>अज़ान से 5 मिनट पहले अलर्ट और आवाज़</p>
 
   <label class="alert-switch-row">
     🌅 फज्र
@@ -2269,7 +2269,7 @@ async function loadPrayerTimes(centerId) {
     await plugin.createChannel({
       id: "prayer-alerts-v2",
       name: "JAMAT SATHI Namaz Alerts",
-      description: "नमाज़ से 2 मिनट पहले अलर्ट",
+      description: "नमाज़ से 5 मिनट पहले अलर्ट",
       importance: 4,
       sound: "jamat_alert",
       vibration: true
@@ -2343,7 +2343,7 @@ const voiceAlarms = [];
           0
         );
 
-        at.setMinutes(at.getMinutes() - 2);
+        at.setMinutes(at.getMinutes() - 5);
 
         if (at <= new Date()) return;
 
