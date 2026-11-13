@@ -2935,6 +2935,10 @@ async function enableNotificationsFromWelcome() {
       return;
     }
 
+    if (window.PrayerSpeech?.requestBatteryOptimizationExemption) {
+      await window.PrayerSpeech.requestBatteryOptimizationExemption();
+      localStorage.setItem("batteryOptimizationPrompted", "yes");
+        }
     document.getElementById("notificationWelcome").style.display = "none";
     localStorage.setItem("notificationWelcomeDone", "yes");
 
