@@ -381,33 +381,57 @@ button, select, input {
   <button onclick="closePrayerAlertSettings()">⬅ वापस जाएँ</button>
   <p>अज़ान से 2 मिनट पहले अलर्ट और आवाज़</p>
 
-  <div class="prayer">
-    <label>🌅 फज्र
+  <label class="alert-switch-row">
+    🌅 फज्र
+    <span class="alert-switch">
       <input type="checkbox" id="alert_fajr" checked onchange="savePrayerAlertSettings()">
-    </label>
-  </div>
-  <div class="prayer">
-    <label>☀️ ज़ुहर
+      <span class="alert-slider"></span>
+    </span>
+  </label>
+
+  <label class="alert-switch-row">
+    ☀️ ज़ुहर
+    <span class="alert-switch">
       <input type="checkbox" id="alert_dhuhr" checked onchange="savePrayerAlertSettings()">
-    </label>
-  </div>
-  <div class="prayer">
-    <label>🌤️ असर
+      <span class="alert-slider"></span>
+    </span>
+  </label>
+
+  <label class="alert-switch-row">
+    🌤️ असर
+    <span class="alert-switch">
       <input type="checkbox" id="alert_asr" checked onchange="savePrayerAlertSettings()">
-    </label>
-  </div>
-  <div class="prayer">
-    <label>🌇 मगरिब
+      <span class="alert-slider"></span>
+    </span>
+  </label>
+
+  <label class="alert-switch-row">
+    🌇 मगरिब
+    <span class="alert-switch">
       <input type="checkbox" id="alert_maghrib" checked onchange="savePrayerAlertSettings()">
-    </label>
-  </div>
-  <div class="prayer">
-    <label>🌙 ईशा
+      <span class="alert-slider"></span>
+    </span>
+  </label>
+
+  <label class="alert-switch-row">
+    🌙 ईशा
+    <span class="alert-switch">
       <input type="checkbox" id="alert_isha" checked onchange="savePrayerAlertSettings()">
-    </label>
-  </div>
-  <div class="prayer">
-    <label>🕌 जुमा
+      <span class="alert-slider"></span>
+    </span>
+  </label>
+
+  <label class="alert-switch-row">
+    🕌 जुमा
+    <span class="alert-switch">
+      <input type="checkbox" id="alert_juma" checked onchange="savePrayerAlertSettings()">
+      <span class="alert-slider"></span>
+    </span>
+  </label>
+
+  <button onclick="turnOffAllPrayerAlerts()">🔕 सभी नमाज़ के अलर्ट बंद करें</button>
+  <small id="prayerAlertStatus">आपकी सेटिंग सेव हो जाएगी।</small>
+</section>
       <input type="checkbox" id="alert_juma" checked onchange="savePrayerAlertSettings()">
     </label>
   </div>
