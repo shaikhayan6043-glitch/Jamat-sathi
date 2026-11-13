@@ -2709,14 +2709,38 @@ async function savePrayerAlertSettings() {
     await loadPrayerTimes(centerSelect.value);
 }
 }
-function showNotificationWelcome() {
+
+async function showNotificationWelcome() {
   if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
 
-  if (localStorage.getItem("notificationWelcomeDone") === "yes") return;
-
   const modal = document.getElementById("notificationWelcome");
-  if (modal) modal.style.display = "flex";
+  if (!modal) return;
+
+  try {
+    const plugin = window.LocalNotifications;
+
+    if (!plugin) {
+      modal.style.display = "flex";
+      return;
+    }
+
+    const permission = await plugin.checkPermissions();
+    const exact = await plugin.checkExactNotificationSetting();
+
+    if (
+      permission.display !== "granted" ||
+      exact.exact_alarm !== "granted"
+    ) {
+      modal.style.display = "flex";
+    } else {
+      localStorage.setItem("notificationWelcomeDone", "yes");
+    }
+  } catch (error) {
+    console.error(error);
+    modal.style.display = "flex";
+  }
 }
+  
 
 async function enableNotificationsFromWelcome() {
   try {
