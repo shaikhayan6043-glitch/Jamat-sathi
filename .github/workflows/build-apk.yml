@@ -41,6 +41,90 @@ jobs:
 
       - name: Sync Android project
         run: npx cap sync android
+        
+      - name: Install Hindi voice alarm system
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+
+          package_dir = Path("android/app/src/main/java/com/jamatsathi/app")
+          package_dir.mkdir(parents=True, exist_ok=True)
+
+          source_dir = Path("android-custom/src/main/java/com/jamatsathi/app")
+
+          for filename in [
+              "PrayerSpeechPlugin.java",
+              "SpeechAlarmReceiver.java",
+              "PrayerSpeechService.java"
+          ]:
+              source = source_dir / filename
+              if not source.exists():
+                  raise SystemExit(f"Missing file: {source}")
+              shutil.copy2(source, package_dir / filename)
+
+          main = package_dir / "MainActivity.java"
+          if not main.exists():
+              raise SystemExit("MainActivity.java नहीं मिली")
+
+          content = main.read_text()
+
+          if "PrayerSpeechPlugin" not in content:
+              content = content.replace(
+                  "import com.getcapacitor.BridgeActivity;",
+                  "import com.getcapacitor.BridgeActivity;\n"
+                  "import com.jamatsathi.app.PrayerSpeechPlugin;"
+              )
+
+              content = content.replace(
+                  "public class MainActivity extends BridgeActivity {",
+                  "public class MainActivity extends BridgeActivity {\n"
+                  "    @Override\n"
+                  "    public void onCreate(android.os.Bundle savedInstanceState) {\n"
+                  "        registerPlugin(PrayerSpeechPlugin.class);\n"
+                  "        super.onCreate(savedInstanceState);\n"
+                  "    }"
+              )
+
+          main.write_text(content)
+
+          manifest = Path("android/app/src/main/AndroidManifest.xml")
+          xml = manifest.read_text()
+
+          permissions = [
+              '    <uses-permission android:name="android.permission.WAKE_LOCK" />',
+              '    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />',
+              '    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />'
+          ]
+
+          for permission in permissions:
+              name = permission.split('"')[1]
+              if name not in xml:
+                  xml = xml.replace(
+                      "<application",
+                      permission + "\n    <application",
+                      1
+                  )
+
+          components = """
+              <receiver
+                  android:name="com.jamatsathi.app.SpeechAlarmReceiver"
+                  android:enabled="true"
+                  android:exported="false" />
+
+              <service
+                  android:name="com.jamatsathi.app.PrayerSpeechService"
+                  android:enabled="true"
+                  android:exported="false"
+                  android:foregroundServiceType="mediaPlayback" />
+          """
+
+          if "SpeechAlarmReceiver" not in xml:
+              xml = xml.replace("</application>", components + "\n    </application>")
+
+          manifest.write_text(xml)
+          PY
+          
       - name: Create notification sound
         run: |
           python3 - <<'PY'
