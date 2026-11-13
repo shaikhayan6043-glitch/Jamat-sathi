@@ -68,10 +68,11 @@ jobs:
           if not main.exists():
               raise SystemExit("MainActivity.java नहीं मिली")
 
-          content = main.read_text()
-                imports = [
+                    content = main.read_text()
+
+          imports = [
               "import com.jamatsathi.app.PrayerSpeechPlugin;",
-           "import com.jamatsathi.app.AnnouncementTranslationPlugin;"
+              "import com.jamatsathi.app.AnnouncementTranslationPlugin;"
           ]
 
           for import_line in imports:
