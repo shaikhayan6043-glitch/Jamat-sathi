@@ -2244,6 +2244,7 @@ async function loadPrayerTimes(centerId) {
 
   try {
     const plugin = await window.prayerNotificationsReady;
+    showStatus("✅ नोटिफिकेशन प्लगइन लोड हो गया।");
 
     if (!plugin) {
       showStatus("❌ नोटिफिकेशन प्लगइन नहीं मिला।");
