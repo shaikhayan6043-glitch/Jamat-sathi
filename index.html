@@ -270,6 +270,61 @@ button, select, input {
   font-size: 16px;
   min-height: 46px;
 }
+ /* Prayer alert ON/OFF toggle */
+.alert-switch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 4px;
+  font-weight: bold;
+  color: var(--islam-green);
+}
+
+.alert-switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 29px;
+  flex-shrink: 0;
+}
+
+.alert-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.alert-slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: #d8dedb;
+  border-radius: 30px;
+  transition: .25s;
+}
+
+.alert-slider:before {
+  content: "";
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  left: 4px;
+  bottom: 4px;
+  background: white;
+  border-radius: 50%;
+  transition: .25s;
+  box-shadow: 0 1px 4px #0003;
+}
+
+.alert-switch input:checked + .alert-slider {
+  background: #064b38;
+}
+
+.alert-switch input:checked + .alert-slider:before {
+  transform: translateX(23px);
+}
 </style>
 </head>
 <body>
