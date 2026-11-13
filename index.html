@@ -2537,6 +2537,7 @@ async function restoreAdminSession() {
     document.getElementById("centerManagement").style.display =
       profile.role === "main_admin" ? "block" : "none";
 
+    document.getElementById("adminSection").style.display = "block";
     document.getElementById("adminPanel").style.display = "block";
 
     document.getElementById("adminWelcome").textContent =
