@@ -2656,6 +2656,31 @@ async function savePrayerTime() {
 
   await loadPrayerTimes(centerId);
  } 
+  async function testPrayerVoiceAlarm() {
+  const status = document.getElementById("prayerAlertStatus");
+
+  try {
+    if (!window.PrayerSpeech) {
+      throw new Error("हिंदी आवाज़ वाला सिस्टम नहीं मिला।");
+    }
+
+    const result = await window.PrayerSpeech.replaceAlarms({
+      alarms: [{
+        id: 800000299,
+        at: Date.now() + 120000,
+        message: "ध्यान दीजिए! यह JAMAT SATHI की हिंदी आवाज़ का टेस्ट है।"
+      }]
+    });
+
+    if (!result.scheduled) {
+      throw new Error("टेस्ट अलर्ट शेड्यूल नहीं हुआ।");
+    }
+
+    status.textContent = "✅ टेस्ट शेड्यूल हो गया। 2 मिनट बाद आवाज़ सुनें।";
+  } catch (error) {
+    status.textContent = "❌ टेस्ट में समस्या: " + (error.message || error);
+  }
+  }
 async function savePrayerAlertSettings() {
   const prayers = ["fajr", "dhuhr", "asr", "maghrib", "isha", "juma"];
   const settings = {};
