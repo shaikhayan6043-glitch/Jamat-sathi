@@ -1506,22 +1506,22 @@ editButton.textContent = translations[lang].editAnnouncement;
   });
 }
   
-function speakAnnouncement(title, message) {
-  if (!("speechSynthesis" in window)) {
-    alert("आपके फोन में हिंदी आवाज़ की सुविधा उपलब्ध नहीं है।");
-    return;
+async function speakAnnouncement(title, message) {
+  try {
+    if (!window.PrayerSpeech?.speakAnnouncement) {
+      alert("Announcement voice system लोड नहीं हुआ।");
+      return;
+    }
+
+    await window.PrayerSpeech.speakAnnouncement({
+      title: title,
+      message: message
+    });
+
+  } catch (error) {
+    console.error("Announcement voice error:", error);
+    alert("ऐलान की आवाज़ शुरू नहीं हो सकी।");
   }
-
-  window.speechSynthesis.cancel();
-
-  const announcementText = title + "। " + message;
-  const speech = new SpeechSynthesisUtterance(announcementText);
-
-  speech.lang = "hi-IN";
-  speech.rate = 0.9;
-  speech.pitch = 1;
-
-  window.speechSynthesis.speak(speech);
 }
   
 async function loadAnnouncements(centerId) {
