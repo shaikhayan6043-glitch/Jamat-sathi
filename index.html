@@ -2241,6 +2241,7 @@ async function loadPrayerTimes(centerId) {
   const showStatus = message => {
     if (status) status.textContent = message;
   };
+     showStatus("⏳ नमाज़ के अलर्ट शेड्यूल हो रहे हैं...");
 
   if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
     showStatus("❌ Android नोटिफिकेशन सिस्टम नहीं मिला।");
