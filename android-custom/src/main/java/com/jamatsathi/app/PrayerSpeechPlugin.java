@@ -57,6 +57,70 @@ public class PrayerSpeechPlugin extends Plugin {
             call.reject("Battery permission नहीं खुली।", error);
         }
     }
+        @PluginMethod
+    public void speakAnnouncement(PluginCall call) {
+        String title = call.getString("title", "");
+        String message = call.getString("message", "");
+        String text = title + "। " + message;
+
+        if (text.trim().isEmpty()) {
+            call.reject("ऐलान खाली है।");
+            return;
+        }
+
+        final TextToSpeech[] holder = new TextToSpeech[1];
+
+        holder[0] = new TextToSpeech(
+            getContext(),
+            status -> {
+                TextToSpeech tts = holder[0];
+
+                if (status != TextToSpeech.SUCCESS) {
+                    if (tts != null) tts.shutdown();
+                    call.reject("फोन की Text-to-Speech सुविधा शुरू नहीं हुई।");
+                    return;
+                }
+
+                int result = tts.setLanguage(new Locale("hi", "IN"));
+
+                if (result == TextToSpeech.LANG_MISSING_DATA ||
+                    result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    tts.shutdown();
+                    call.reject("फोन में Hindi voice data उपलब्ध नहीं है।");
+                    return;
+                }
+
+                tts.setSpeechRate(0.9f);
+
+                tts.setOnUtteranceProgressListener(
+                    new android.speech.tts.UtteranceProgressListener() {
+                        @Override
+                        public void onStart(String id) {
+                        }
+
+                        @Override
+                        public void onDone(String id) {
+                            tts.shutdown();
+                        }
+
+                        @Override
+                        public void onError(String id) {
+                            tts.shutdown();
+                        }
+                    }
+                );
+
+                tts.speak(
+                    text,
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    "JAMAT_ANNOUNCEMENT"
+                );
+
+                call.resolve();
+            }
+        );
+    }
     @PluginMethod
     public void replaceAlarms(PluginCall call) {
         try {
