@@ -25,6 +25,36 @@ public class PrayerSpeechPlugin extends Plugin {
     private static final String ACTION =
         "com.jamatsathi.app.SPEAK_PRAYER";
 
+      @PluginMethod
+    public void requestBatteryOptimizationExemption(PluginCall call) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PowerManager powerManager =
+                    (PowerManager) getContext().getSystemService(
+                        Context.POWER_SERVICE
+                    );
+
+                if (!powerManager.isIgnoringBatteryOptimizations(
+                    getContext().getPackageName())) {
+
+                    Intent intent = new Intent(
+                        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                    );
+
+                    intent.setData(Uri.parse(
+                        "package:" + getContext().getPackageName()
+                    ));
+
+                    getActivity().startActivity(intent);
+                }
+            }
+
+            call.resolve();
+
+        } catch (Exception error) {
+            call.reject("Battery permission नहीं खुली।", error);
+        }
+    }
     @PluginMethod
     public void replaceAlarms(PluginCall call) {
         try {
