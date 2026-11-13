@@ -2243,6 +2243,7 @@ async function loadPrayerTimes(centerId) {
   }
 
   try {
+    showStatus("🔎 नोटिफिकेशन प्लगइन का इंतज़ार हो रहा है...");
     const plugin = await window.prayerNotificationsReady;
     showStatus("✅ नोटिफिकेशन प्लगइन लोड हो गया।");
 
