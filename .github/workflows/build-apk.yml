@@ -40,30 +40,7 @@ jobs:
         run: npx cap add android
 
       - name: Sync Android project
-        run: npx cap sync android
-        
-      - name: Add ML Kit Hindi translation
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          gradle = Path("android/app/build.gradle")
-          if not gradle.exists():
-              raise SystemExit("app/build.gradle नहीं मिली")
-
-          content = gradle.read_text()
-          dependency = "    implementation 'com.google.mlkit:translate:17.0.3'"
-
-          if dependency not in content:
-              content = content.replace(
-                  "dependencies {",
-                  "dependencies {\n" + dependency,
-                  1
-              )
-
-          gradle.write_text(content)
-          PY
-          
+        run: npx cap sync android    
         
       - name: Install Hindi voice alarm system
         run: |
