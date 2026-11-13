@@ -2299,6 +2299,17 @@ const voiceAlarms = [];
       return;
     }
 
+        if (!window.PrayerSpeech) {
+      throw new Error("हिंदी आवाज़ वाला सिस्टम नहीं मिला।");
+    }
+
+    const speechResult = await window.PrayerSpeech.replaceAlarms({
+      alarms: voiceAlarms
+    });
+
+    if (!speechResult.scheduled) {
+      throw new Error("आवाज़ वाले अलर्ट शेड्यूल नहीं हुए।");
+    }
     await plugin.schedule({ notifications });
 
     const after = await plugin.getPending();
