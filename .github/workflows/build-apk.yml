@@ -56,7 +56,8 @@ jobs:
           for filename in [
               "PrayerSpeechPlugin.java",
               "SpeechAlarmReceiver.java",
-              "PrayerSpeechService.java"
+              "PrayerSpeechService.java",
+              "AnnouncementTranslationPlugin.java"
           ]:
               source = source_dir / filename
               if not source.exists():
