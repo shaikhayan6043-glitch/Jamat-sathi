@@ -57,6 +57,43 @@ public class PrayerSpeechPlugin extends Plugin {
             call.reject("Battery permission नहीं खुली।", error);
         }
     }
+    
+    @PluginMethod
+    public void openAppBatterySettings(PluginCall call) {
+        try {
+            Intent intent = new Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            );
+            intent.setData(Uri.parse(
+                "package:" + getContext().getPackageName()
+            ));
+            getActivity().startActivity(intent);
+            call.resolve();
+        } catch (Exception error) {
+            call.reject("ऐप की बैटरी सेटिंग नहीं खुली।", error);
+        }
+    }
+
+    @PluginMethod
+    public void openTextToSpeechSettings(PluginCall call) {
+        try {
+            Intent intent = new Intent(Settings.ACTION_TTS_SETTINGS);
+
+            if (intent.resolveActivity(
+                getContext().getPackageManager()
+            ) == null) {
+                intent = new Intent(
+                    TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA
+                );
+            }
+
+            getActivity().startActivity(intent);
+            call.resolve();
+        } catch (Exception error) {
+            call.reject("Text-to-Speech सेटिंग नहीं खुली।", error);
+        }
+    }
+    
         @PluginMethod
     public void speakAnnouncement(PluginCall call) {
         String title = call.getString("title", "");
