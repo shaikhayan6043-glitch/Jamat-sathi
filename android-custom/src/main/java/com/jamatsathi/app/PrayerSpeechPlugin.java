@@ -57,6 +57,30 @@ public class PrayerSpeechPlugin extends Plugin {
             call.reject("Battery permission नहीं खुली।", error);
         }
     }
+        @PluginMethod
+    public void checkBatteryOptimization(PluginCall call) {
+        try {
+            PowerManager powerManager =
+                (PowerManager) getContext().getSystemService(
+                    Context.POWER_SERVICE
+                );
+
+            boolean allowed = true;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                allowed = powerManager.isIgnoringBatteryOptimizations(
+                    getContext().getPackageName()
+                );
+            }
+
+            JSObject result = new JSObject();
+            result.put("allowed", allowed);
+            call.resolve(result);
+
+        } catch (Exception error) {
+            call.reject("Battery permission जाँच नहीं हो सकी।", error);
+        }
+    }
     
     @PluginMethod
     public void openAppBatterySettings(PluginCall call) {
