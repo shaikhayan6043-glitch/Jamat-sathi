@@ -685,6 +685,39 @@ function showAdminLogin() {
   section.style.display = "block";
   section.scrollIntoView({ behavior: "smooth" });
   }
+  async function openAppBatterySettings() {
+  try {
+    document.getElementById("settingsMenu").style.display = "none";
+
+    if (!window.PrayerSpeech?.openAppBatterySettings) {
+      alert("Battery settings का सिस्टम लोड नहीं हुआ।");
+      return;
+    }
+
+    await window.PrayerSpeech.openAppBatterySettings();
+
+    alert("बैटरी सेटिंग में जाकर Allow background activity को ON करें।");
+  } catch (error) {
+    console.error(error);
+    alert("बैटरी सेटिंग नहीं खुल सकी।");
+  }
+}
+
+async function openTextToSpeechSettings() {
+  try {
+    document.getElementById("settingsMenu").style.display = "none";
+
+    if (!window.PrayerSpeech?.openTextToSpeechSettings) {
+      alert("Text-to-Speech सिस्टम लोड नहीं हुआ।");
+      return;
+    }
+
+    await window.PrayerSpeech.openTextToSpeechSettings();
+  } catch (error) {
+    console.error(error);
+    alert("हिंदी आवाज़ की सेटिंग नहीं खुल सकी।");
+  }
+}
     function closePrayerAlertSettings() {
   document.getElementById("prayerAlertSection").style.display = "none";
   window.scrollTo({ top: 0, behavior: "smooth" });
