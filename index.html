@@ -2272,11 +2272,13 @@ async function loadPrayerTimes(centerId) {
     return order.indexOf(aName) - order.indexOf(bName);
   });
 
-  if (rows.length === 0) {
-    prayersBox.innerHTML =
-      '<p class="status">इस सेंटर के समय अभी उपलब्ध नहीं हैं।</p>';
-    return;
-  }
+if (rows.length === 0) {
+  prayersBox.innerHTML =
+    '<p class="status">इस सेंटर के समय अभी उपलब्ध नहीं हैं।</p>';
+
+  await schedulePrayerAlerts(data || []);
+  return;
+}
 
   prayersBox.innerHTML = "";
 
