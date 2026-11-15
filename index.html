@@ -696,14 +696,39 @@ function showAdminLogin() {
       return;
     }
 
+    window.batterySettingsOpened = true;
     await window.PrayerSpeech.openAppBatterySettings();
 
-    alert("बैटरी सेटिंग में जाकर Allow background activity को ON करें।");
   } catch (error) {
+    window.batterySettingsOpened = false;
     console.error(error);
     alert("बैटरी सेटिंग नहीं खुल सकी।");
   }
 }
+
+document.addEventListener("visibilitychange", async function() {
+  if (
+    document.visibilityState !== "visible" ||
+    !window.batterySettingsOpened
+  ) {
+    return;
+  }
+
+  window.batterySettingsOpened = false;
+
+  try {
+    const battery = await window.PrayerSpeech.checkBatteryOptimization();
+
+    if (battery.allowed === true) {
+      alert("Android Battery Optimization की अनुमति मिल गई। अब नमाज़ अलर्ट चालू करें। OPPO में Allow background activity भी ON रखें।");
+    } else {
+      alert("Battery Optimization अभी ON नहीं हुई है। कृपया सेटिंग में जाकर इसे चालू करें।");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("बैटरी अनुमति की जाँच नहीं हो सकी।");
+  }
+});
 
 async function openTextToSpeechSettings() {
   try {
