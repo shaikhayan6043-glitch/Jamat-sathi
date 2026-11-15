@@ -53,10 +53,11 @@ jobs:
 
           source_dir = Path("android-custom/src/main/java/com/jamatsathi/app")
 
-          for filename in [
+           for filename in [
               "PrayerSpeechPlugin.java",
               "SpeechAlarmReceiver.java",
-              "PrayerSpeechService.java"
+              "PrayerSpeechService.java",
+              "BootReceiver.java"
           ]:
               source = source_dir / filename
               if not source.exists():
