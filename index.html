@@ -2973,10 +2973,14 @@ async function enableNotificationsFromWelcome() {
       return;
     }
 
-    if (window.PrayerSpeech?.requestBatteryOptimizationExemption) {
-      await window.PrayerSpeech.requestBatteryOptimizationExemption();
-      localStorage.setItem("batteryOptimizationPrompted", "yes");
-        }
+    const battery = await window.PrayerSpeech.checkBatteryOptimization();
+
+if (battery.allowed !== true) {
+  await window.PrayerSpeech.requestBatteryOptimizationExemption();
+
+  alert("Battery Optimization की अनुमति चालू करके वापस ऐप में आएँ। फिर नमाज़ अलर्ट चालू करें बटन दोबारा दबाएँ।");
+  return;
+}
     document.getElementById("notificationWelcome").style.display = "none";
     localStorage.setItem("notificationWelcomeDone", "yes");
 
