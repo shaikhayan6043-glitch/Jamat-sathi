@@ -2464,11 +2464,6 @@ const voiceAlarms = [];
       });
     }
 
-    if (!notifications.length) {
-      showStatus("⚠️ कोई भविष्य का अलर्ट नहीं मिला।");
-      return;
-    }
-
         if (!window.PrayerSpeech) {
       throw new Error("हिंदी आवाज़ वाला सिस्टम नहीं मिला।");
     }
@@ -2477,11 +2472,19 @@ const voiceAlarms = [];
       alarms: voiceAlarms
     });
 
-    if (!speechResult.scheduled) {
+    if (
+      voiceAlarms.length > 0 &&
+      !speechResult.scheduled
+    ) {
       throw new Error("आवाज़ वाले अलर्ट शेड्यूल नहीं हुए।");
     }
-    await plugin.schedule({ notifications });
 
+    if (!notifications.length) {
+      showStatus("⚠️ कोई भविष्य का अलर्ट नहीं मिला। पुराने आवाज़ वाले अलर्ट हटा दिए गए।");
+      return;
+    }
+
+    await plugin.schedule({ notifications });
     const after = await plugin.getPending();
     const count = (after.notifications || []).filter(
       n => n.id >= 900000000 && n.id < 1200000000
