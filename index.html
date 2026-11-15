@@ -687,7 +687,8 @@ function showAdminLogin() {
   section.style.display = "block";
   section.scrollIntoView({ behavior: "smooth" });
   }
-  async function openAppBatterySettings() {
+  
+async function openAppBatterySettings() {
   try {
     document.getElementById("settingsMenu").style.display = "none";
 
@@ -695,6 +696,10 @@ function showAdminLogin() {
       alert("Battery settings का सिस्टम लोड नहीं हुआ।");
       return;
     }
+
+    alert(
+      "अब फोन की App Info सेटिंग खुलेगी। वहाँ Battery Usage या Battery विकल्प खोलें और Allow background activity तथा Auto launch जैसे विकल्प उपलब्ध हों तो ON करें।"
+    );
 
     window.batterySettingsOpened = true;
     await window.PrayerSpeech.openAppBatterySettings();
@@ -705,6 +710,7 @@ function showAdminLogin() {
     alert("बैटरी सेटिंग नहीं खुल सकी।");
   }
 }
+  
 
 document.addEventListener("visibilitychange", async function() {
   if (
