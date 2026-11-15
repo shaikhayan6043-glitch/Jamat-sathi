@@ -2344,8 +2344,12 @@ if (rows.length === 0) {
     showStatus("✅ नोटिफिकेशन प्लगइन लोड हो गया।");
 
     if (!plugin) {
-      showStatus("❌ नोटिफिकेशन प्लगइन नहीं मिला।");
-      return;
+  if (window.PrayerSpeech) {
+    await window.PrayerSpeech.replaceAlarms({ alarms: [] });
+  }
+
+  showStatus("❌ नोटिफिकेशन प्लगइन नहीं मिला।");
+  return;
     }
 
     const permission = await plugin.checkPermissions();
