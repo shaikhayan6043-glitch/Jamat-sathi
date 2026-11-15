@@ -2375,11 +2375,11 @@ if (rows.length === 0) {
     }
 
     await plugin.createChannel({
-      id: "prayer-alerts-v2",
+      id: "prayer-alerts-v3",
       name: "JAMAT SATHI Namaz Alerts",
       description: "नमाज़ से 5 मिनट पहले अलर्ट",
       importance: 4,
-      sound: "jamat_alert",
+      sound: "jamat_alert.wav",
       vibration: true
     });
 
@@ -2459,7 +2459,7 @@ const voiceAlarms = [];
           id: 900000000 + offset * 10 + number,
           title: "🔔 JAMAT SATHI – नमाज़ अलर्ट",
           body: names[key] + " की अज़ान में 5 मिनट बाकी हैं।",
-          channelId: "prayer-alerts-v2",
+         channelId: "prayer-alerts-v3",
           schedule: {
             at: at,
             allowWhileIdle: true,
