@@ -2362,8 +2362,12 @@ if (rows.length === 0) {
     const exact = await plugin.checkExactNotificationSetting();
 
     if (exact.exact_alarm !== "granted") {
-      showStatus("⚠️ Alarms & reminders की अनुमति चालू करें।");
-      return;
+  if (window.PrayerSpeech) {
+    await window.PrayerSpeech.replaceAlarms({ alarms: [] });
+  }
+
+  showStatus("⚠️ Alarms & reminders की अनुमति चालू करें।");
+  return;
     }
 
     await plugin.createChannel({
