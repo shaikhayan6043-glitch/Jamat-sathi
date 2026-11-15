@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.media.AudioAttributes;
+import android.os.Bundle;
 
 import java.util.Locale;
 
@@ -71,6 +73,12 @@ public class PrayerSpeechService extends Service {
                     return;
                 }
 
+                textToSpeech.setAudioAttributes(
+    new AudioAttributes.Builder()
+        .setUsage(AudioAttributes.USAGE_ALARM)
+        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+        .build()
+);
                 textToSpeech.setSpeechRate(0.90f);
 
                 textToSpeech.setOnUtteranceProgressListener(
