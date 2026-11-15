@@ -2949,22 +2949,23 @@ async function showNotificationWelcome() {
   try {
     const plugin = window.LocalNotifications;
 
-    if (!plugin) {
+    if (
+      !plugin ||
+      !window.PrayerSpeech?.checkBatteryOptimization
+    ) {
       modal.style.display = "flex";
       return;
     }
 
     const permission = await plugin.checkPermissions();
-const exact = await plugin.checkExactNotificationSetting();
+    const exact = await plugin.checkExactNotificationSetting();
+    const battery = await window.PrayerSpeech.checkBatteryOptimization();
 
-const battery = await window.PrayerSpeech.checkBatteryOptimization();
-
-if (
-  permission.display !== "granted" ||
-  exact.exact_alarm !== "granted" ||
-  battery.allowed !== true
-) {
-
+    if (
+      permission.display !== "granted" ||
+      exact.exact_alarm !== "granted" ||
+      battery.allowed !== true
+    ) {
       modal.style.display = "flex";
     } else {
       localStorage.setItem("notificationWelcomeDone", "yes");
@@ -2981,6 +2982,14 @@ async function enableNotificationsFromWelcome() {
 
     if (!plugin) {
       alert("नोटिफिकेशन सिस्टम लोड नहीं हुआ।");
+      return;
+    }
+
+    if (
+      !window.PrayerSpeech?.checkBatteryOptimization ||
+      !window.PrayerSpeech?.requestBatteryOptimizationExemption
+    ) {
+      alert("बैटरी अनुमति का सिस्टम लोड नहीं हुआ। ऐप बंद करके दोबारा खोलें।");
       return;
     }
 
@@ -3005,6 +3014,30 @@ async function enableNotificationsFromWelcome() {
       alert("Alarms & reminders की अनुमति चालू करके वापस ऐप में आएँ।");
       return;
     }
+
+    const battery = await window.PrayerSpeech.checkBatteryOptimization();
+
+    if (battery.allowed !== true) {
+      await window.PrayerSpeech.requestBatteryOptimizationExemption();
+
+      alert("Battery Optimization की अनुमति चालू करके वापस ऐप में आएँ। फिर नमाज़ अलर्ट चालू करें बटन दोबारा दबाएँ।");
+      return;
+    }
+
+    document.getElementById("notificationWelcome").style.display = "none";
+    localStorage.setItem("notificationWelcomeDone", "yes");
+
+    if (centerSelect && centerSelect.value) {
+      await loadPrayerTimes(centerSelect.value);
+    } else {
+      alert("अब अपना सेंटर चुनें। सेंटर चुनते ही नमाज़ अलर्ट सेट होंगे।");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("अनुमति लेने में समस्या हुई।");
+  }
+}
+
 
     const battery = await window.PrayerSpeech.checkBatteryOptimization();
 
