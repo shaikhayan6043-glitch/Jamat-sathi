@@ -53,7 +53,7 @@ jobs:
 
           source_dir = Path("android-custom/src/main/java/com/jamatsathi/app")
 
-           for filename in [
+          for filename in [
               "PrayerSpeechPlugin.java",
               "SpeechAlarmReceiver.java",
               "PrayerSpeechService.java",
