@@ -119,6 +119,15 @@ jobs:
                   android:enabled="true"
                   android:exported="false" />
 
+              <receiver
+                  android:name="com.jamatsathi.app.BootReceiver"
+                  android:enabled="true"
+                  android:exported="true">
+                  <intent-filter>
+                      <action android:name="android.intent.action.BOOT_COMPLETED" />
+                  </intent-filter>
+              </receiver>
+
               <service
                   android:name="com.jamatsathi.app.PrayerSpeechService"
                   android:enabled="true"
