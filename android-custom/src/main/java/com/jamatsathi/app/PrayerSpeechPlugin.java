@@ -224,6 +224,10 @@ public class PrayerSpeechPlugin extends Plugin {
                 call.reject("Voice alarms की सूची नहीं मिली।");
                 return;
             }
+                        context.getSharedPreferences("JamatSathiAlarms", Context.MODE_PRIVATE)
+                .edit()
+                .putString("voice_alarms", alarms.toString())
+                .apply();
 
             int scheduled = 0;
             long now = System.currentTimeMillis();
