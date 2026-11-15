@@ -101,7 +101,7 @@ public class PrayerSpeechPlugin extends Plugin {
     @PluginMethod
     public void openTextToSpeechSettings(PluginCall call) {
         try {
-            Intent intent = new Intent(Settings.ACTION_TTS_SETTINGS);
+            Intent intent = new Intent("com.android.settings.TTS_SETTINGS");
 
             if (intent.resolveActivity(
                 getContext().getPackageManager()
