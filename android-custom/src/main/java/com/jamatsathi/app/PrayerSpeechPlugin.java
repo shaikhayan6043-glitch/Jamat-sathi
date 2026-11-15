@@ -186,21 +186,26 @@ public class PrayerSpeechPlugin extends Plugin {
     public void replaceAlarms(PluginCall call) {
         try {
             Context context = getContext();
+
             AlarmManager alarmManager =
                 (AlarmManager) context.getSystemService(
                     Context.ALARM_SERVICE
                 );
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-                && !alarmManager.canScheduleExactAlarms()) {
-                call.reject("Alarms & reminders की अनुमति नहीं मिली।");
+            JSArray alarms = call.getArray("alarms");
+
+            if (alarms == null) {
+                call.reject("Voice alarms की सूची नहीं मिली।");
                 return;
             }
 
-            // पुराने सभी JAMAT SATHI voice alarms हटाएँ
+            // पहले पुराने सभी voice alarms हटाएँ
             for (int id = 800000000; id < 800000300; id++) {
-                Intent oldIntent = new Intent(context,
-                    SpeechAlarmReceiver.class);
+                Intent oldIntent = new Intent(
+                    context,
+                    SpeechAlarmReceiver.class
+                );
+
                 oldIntent.setAction(ACTION);
 
                 PendingIntent oldPending =
@@ -218,14 +223,27 @@ public class PrayerSpeechPlugin extends Plugin {
                 }
             }
 
-            JSArray alarms = call.getArray("alarms");
+            // खाली सूची हो तो अनुमति के बिना भी पुराने अलर्ट हट सकेंगे
+            if (
+                alarms.length() > 0 &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                !alarmManager.canScheduleExactAlarms()
+            ) {
+                context.getSharedPreferences(
+                    "JamatSathiAlarms",
+                    Context.MODE_PRIVATE
+                ).edit()
+                    .putString("voice_alarms", "[]")
+                    .apply();
 
-            if (alarms == null) {
-                call.reject("Voice alarms की सूची नहीं मिली।");
+                call.reject("Alarms & reminders की अनुमति नहीं मिली।");
                 return;
             }
-                        context.getSharedPreferences("JamatSathiAlarms", Context.MODE_PRIVATE)
-                .edit()
+
+            context.getSharedPreferences(
+                "JamatSathiAlarms",
+                Context.MODE_PRIVATE
+            ).edit()
                 .putString("voice_alarms", alarms.toString())
                 .apply();
 
@@ -247,6 +265,7 @@ public class PrayerSpeechPlugin extends Plugin {
                     context,
                     SpeechAlarmReceiver.class
                 );
+
                 intent.setAction(ACTION);
                 intent.putExtra("message", message);
 
