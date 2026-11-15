@@ -253,13 +253,18 @@ public class PrayerSpeechPlugin extends Plugin {
             for (int i = 0; i < alarms.length(); i++) {
                 JSONObject item = alarms.getJSONObject(i);
 
-                int id = item.getInt("id");
-                long at = item.getLong("at");
-                String message = item.getString("message");
+            int id = item.getInt("id");
+long at = item.getLong("at");
+String message = item.optString("message", "");
 
-                if (at <= now || message.trim().isEmpty()) {
-                    continue;
-                }
+if (
+    id < 800000000 ||
+    id >= 800000300 ||
+    at <= now ||
+    message.trim().isEmpty()
+) {
+    continue;
+}
 
                 Intent intent = new Intent(
                     context,
