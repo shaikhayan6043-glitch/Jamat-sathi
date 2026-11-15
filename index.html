@@ -3040,29 +3040,6 @@ async function enableNotificationsFromWelcome() {
     alert("अनुमति लेने में समस्या हुई।");
   }
 }
-
-
-    const battery = await window.PrayerSpeech.checkBatteryOptimization();
-
-if (battery.allowed !== true) {
-  await window.PrayerSpeech.requestBatteryOptimizationExemption();
-
-  alert("Battery Optimization की अनुमति चालू करके वापस ऐप में आएँ। फिर नमाज़ अलर्ट चालू करें बटन दोबारा दबाएँ।");
-  return;
-}
-    document.getElementById("notificationWelcome").style.display = "none";
-    localStorage.setItem("notificationWelcomeDone", "yes");
-
-    if (centerSelect && centerSelect.value) {
-      await loadPrayerTimes(centerSelect.value);
-    } else {
-      alert("अब अपना सेंटर चुनें। सेंटर चुनते ही नमाज़ अलर्ट सेट होंगे।");
-    }
-  } catch (error) {
-    console.error(error);
-    alert("अनुमति लेने में समस्या हुई।");
-  }
-}
   
 function loadPrayerAlertSettings() {
   const saved = JSON.parse(localStorage.getItem("prayerAlertSettings") || "{}");
