@@ -46,12 +46,17 @@ public class BootReceiver extends BroadcastReceiver {
                 JSONObject item = alarms.getJSONObject(i);
 
                 int id = item.getInt("id");
-                long at = item.getLong("at");
-                String message = item.getString("message");
+long at = item.getLong("at");
+String message = item.optString("message", "");
 
-                if (at <= now || message.trim().isEmpty()) {
-                    continue;
-                }
+if (
+    id < 800000000 ||
+    id >= 800000300 ||
+    at <= now ||
+    message.trim().isEmpty()
+) {
+    continue;
+}
 
                 Intent intent = new Intent(
                     context,
