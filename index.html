@@ -2351,8 +2351,12 @@ if (rows.length === 0) {
     const permission = await plugin.checkPermissions();
 
     if (permission.display !== "granted") {
-      showStatus("⚠️ फोन की Notifications अनुमति चालू करें।");
-      return;
+  if (window.PrayerSpeech) {
+    await window.PrayerSpeech.replaceAlarms({ alarms: [] });
+  }
+
+  showStatus("⚠️ फोन की Notifications अनुमति चालू करें।");
+  return;
     }
 
     const exact = await plugin.checkExactNotificationSetting();
