@@ -2506,7 +2506,7 @@ const voiceAlarms = [];
         : "⚠️ अलर्ट शेड्यूल नहीं हुए।"
     );
 
-   } catch (error) {
+     } catch (error) {
     console.error("Prayer alert error:", error);
 
     if (window.PrayerSpeech) {
@@ -2516,10 +2516,10 @@ const voiceAlarms = [];
         console.error("Old voice alarms clear error:", speechError);
       }
     }
-  }
 
     showStatus("❌ अलर्ट की समस्या: " + (error.message || error));
   }
+ }
 async function joinJamaat() {
   const name = document.getElementById("person").value.trim();
   const centerId = centerSelect.value;
