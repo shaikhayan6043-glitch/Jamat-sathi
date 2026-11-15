@@ -91,11 +91,17 @@ public class PrayerSpeechService extends Service {
                         }
                     }
                 );
+                
+            Bundle speechParams = new Bundle();
+                speechParams.putFloat(
+                    TextToSpeech.Engine.KEY_PARAM_VOLUME,
+                    1.0f
+                );
 
                 textToSpeech.speak(
                     message,
                     TextToSpeech.QUEUE_FLUSH,
-                    null,
+                    speechParams,
                     "JAMAT_SATHI_PRAYER_" + startId
                 );
             }
