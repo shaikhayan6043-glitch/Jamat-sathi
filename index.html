@@ -3081,10 +3081,17 @@ async function turnOffAllPrayerAlerts() {
           await plugin.cancel({ notifications: oldAlerts });
         }
       }
+
+      if (window.PrayerSpeech?.replaceAlarms) {
+        await window.PrayerSpeech.replaceAlarms({
+          alarms: []
+        });
+      }
     }
 
     document.getElementById("prayerAlertStatus").textContent =
-      "🔕 सभी नमाज़ के अलर्ट बंद कर दिए गए हैं।";
+      "🔕 सभी नमाज़ के अलर्ट और आवाज़ वाले अलार्म बंद कर दिए गए हैं।";
+
   } catch (error) {
     console.error(error);
     document.getElementById("prayerAlertStatus").textContent =
