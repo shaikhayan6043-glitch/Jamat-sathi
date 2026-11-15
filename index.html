@@ -2922,12 +2922,15 @@ async function showNotificationWelcome() {
     }
 
     const permission = await plugin.checkPermissions();
-    const exact = await plugin.checkExactNotificationSetting();
-    if (
-      permission.display !== "granted" ||
-      exact.exact_alarm !== "granted" ||
-      localStorage.getItem("batteryOptimizationPrompted") !== "yes"
-    ) {
+const exact = await plugin.checkExactNotificationSetting();
+
+const battery = await window.PrayerSpeech.checkBatteryOptimization();
+
+if (
+  permission.display !== "granted" ||
+  exact.exact_alarm !== "granted" ||
+  battery.allowed !== true
+) {
 
       modal.style.display = "flex";
     } else {
