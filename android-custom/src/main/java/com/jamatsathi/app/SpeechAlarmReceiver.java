@@ -20,7 +20,14 @@ android.util.Log.i(
     ", received=" + receivedAt +
     ", delay_ms=" + (receivedAt - scheduledAt)
 );
-
+context.getSharedPreferences(
+    "JamatSathiDiagnostics",
+    Context.MODE_PRIVATE
+).edit()
+    .putLong("last_scheduled_at", scheduledAt)
+    .putLong("last_received_at", receivedAt)
+    .putLong("last_alarm_delay_ms", receivedAt - scheduledAt)
+    .apply();
         if (message == null || message.trim().isEmpty()) {
             return;
         }
