@@ -3175,6 +3175,32 @@ async function turnOffAllPrayerAlerts() {
       "⚠️ अलर्ट बंद करने में समस्या हुई।";
   }
 }
+  async function showAlarmDiagnostics() {
+  const box = document.getElementById("alarmDiagnosticsResult");
+
+  try {
+    if (!window.PrayerSpeech?.getAlarmDiagnostics) {
+      box.textContent = "❌ जाँच सुविधा उपलब्ध नहीं है।";
+      return;
+    }
+
+    const data = await window.PrayerSpeech.getAlarmDiagnostics();
+
+    if (!data.receivedAt) {
+      box.textContent = "अभी तक कोई अलार्म रिकॉर्ड नहीं मिला।";
+      return;
+    }
+
+    const seconds = ms => (ms / 1000).toFixed(2) + " सेकंड";
+
+    box.textContent =
+      "अलार्म पहुँचने की देरी: " + seconds(data.alarmDelayMs) +
+      " | आवाज़ शुरू होने की कुल देरी: " +
+      (data.ttsDelayMs >= 0 ? seconds(data.ttsDelayMs) : "रिकॉर्ड नहीं मिला");
+  } catch (error) {
+    box.textContent = "❌ रिकॉर्ड पढ़ने में समस्या हुई।";
+  }
+  }
 loadPrayerAlertSettings();
 showNotificationWelcome();
 loadCenters().then(() => {
