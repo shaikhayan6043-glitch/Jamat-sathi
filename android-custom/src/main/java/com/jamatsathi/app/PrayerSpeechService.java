@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.media.AudioAttributes;
@@ -21,7 +22,30 @@ public class PrayerSpeechService extends Service {
         "jamat_sathi_speech_channel";
 
     private static final int NOTIFICATION_ID = 777;
+    private PowerManager.WakeLock wakeLock;
 
+private void acquireSpeechWakeLock() {
+    if (wakeLock == null) {
+        PowerManager powerManager =
+            (PowerManager) getSystemService(POWER_SERVICE);
+
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "JamatSathi:PrayerSpeech"
+        );
+        wakeLock.setReferenceCounted(false);
+    }
+
+    if (!wakeLock.isHeld()) {
+        wakeLock.acquire(2 * 60 * 1000L);
+    }
+}
+
+private void releaseSpeechWakeLock() {
+    if (wakeLock != null && wakeLock.isHeld()) {
+        wakeLock.release();
+    }
+}
     private TextToSpeech textToSpeech;
 
     @Override
@@ -43,6 +67,7 @@ public class PrayerSpeechService extends Service {
 
         if (message == null || message.trim().isEmpty()) {
             stopSelf(startId);
+            releaseSpeechWakeLock();
             return START_NOT_STICKY;
         }
 
@@ -160,7 +185,9 @@ public class PrayerSpeechService extends Service {
             textToSpeech = null;
         }
 
+       releaseSpeechWakeLock();
         super.onDestroy();
+        
     }
 
     @Override
