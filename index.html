@@ -3046,6 +3046,13 @@ async function enableNotificationsFromWelcome() {
     }
 
     const battery = await window.PrayerSpeech.checkBatteryOptimization();
+    const voice = await window.PrayerSpeech.checkHindiVoice();
+
+    if (voice.available !== true) {
+      alert("फोन में Hindi Voice उपलब्ध नहीं है। कृपया Hindi Text-to-Speech सेटिंग में जाकर Hindi Voice डाउनलोड या चालू करें।");
+      await window.PrayerSpeech.openTextToSpeechSettings();
+      return;
+    }
 
     if (battery.allowed !== true) {
       await window.PrayerSpeech.requestBatteryOptimizationExemption();
