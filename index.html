@@ -3036,7 +3036,8 @@ async function showNotificationWelcome() {
     ) {
       modal.style.display = "flex";
     } else {
-      localStorage.setItem("notificationWelcomeDone", "yes");
+  modal.style.display = "none";
+  localStorage.setItem("notificationWelcomeDone", "yes");
     }
   } catch (error) {
     console.error(error);
