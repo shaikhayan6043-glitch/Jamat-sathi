@@ -69,6 +69,7 @@ private void releaseSpeechWakeLock() {
             stopSelf(startId);
             releaseSpeechWakeLock();
             return START_NOT_STICKY;
+            acquireSpeechWakeLock();
         }
 
         if (textToSpeech != null) {
