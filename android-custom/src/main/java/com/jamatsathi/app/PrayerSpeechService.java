@@ -122,6 +122,16 @@ private void releaseSpeechWakeLock() {
         ", started=" + startedAt +
         ", delay_ms=" + (scheduledAt > 0 ? startedAt - scheduledAt : -1)
     );
+                           getSharedPreferences(
+    "JamatSathiDiagnostics",
+    MODE_PRIVATE
+).edit()
+    .putLong("last_tts_started_at", startedAt)
+    .putLong(
+        "last_tts_delay_ms",
+        scheduledAt > 0 ? startedAt - scheduledAt : -1
+    )
+    .apply();
                        }
 
                         @Override
