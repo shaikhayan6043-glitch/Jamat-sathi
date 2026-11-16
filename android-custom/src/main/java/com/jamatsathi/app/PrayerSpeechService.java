@@ -123,7 +123,6 @@ private void releaseSpeechWakeLock() {
         ", delay_ms=" + (scheduledAt > 0 ? startedAt - scheduledAt : -1)
     );
                        }
-                        }
 
                         @Override
                         public void onDone(String utteranceId) {
