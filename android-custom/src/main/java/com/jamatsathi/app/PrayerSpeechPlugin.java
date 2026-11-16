@@ -313,6 +313,7 @@ if (
 
                 intent.setAction(ACTION);
                 intent.putExtra("message", message);
+                intent.putExtra("scheduled_at", at);
 
                 PendingIntent pending =
                     PendingIntent.getBroadcast(
