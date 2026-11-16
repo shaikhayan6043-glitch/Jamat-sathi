@@ -113,6 +113,10 @@ private void releaseSpeechWakeLock() {
 
                         @Override
                         public void onStart(String utteranceId) {
+    android.util.Log.i(
+        "JAMAT_SATHI",
+        "TTS_STARTED: " + System.currentTimeMillis()
+    );
                         }
 
                         @Override
