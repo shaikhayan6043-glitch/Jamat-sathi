@@ -344,4 +344,30 @@ if (
             );
         }
     }
+    @PluginMethod
+    public void getAlarmDiagnostics(PluginCall call) {
+        try {
+            android.content.SharedPreferences prefs =
+                getContext().getSharedPreferences(
+                    "JamatSathiDiagnostics",
+                    Context.MODE_PRIVATE
+                );
+
+            JSObject result = new JSObject();
+            result.put("scheduledAt",
+                prefs.getLong("last_scheduled_at", 0));
+            result.put("receivedAt",
+                prefs.getLong("last_received_at", 0));
+            result.put("alarmDelayMs",
+                prefs.getLong("last_alarm_delay_ms", -1));
+            result.put("ttsStartedAt",
+                prefs.getLong("last_tts_started_at", 0));
+            result.put("ttsDelayMs",
+                prefs.getLong("last_tts_delay_ms", -1));
+
+            call.resolve(result);
+        } catch (Exception error) {
+            call.reject("Alarm जाँच का रिकॉर्ड नहीं मिला।", error);
+        }
+    }
 }
