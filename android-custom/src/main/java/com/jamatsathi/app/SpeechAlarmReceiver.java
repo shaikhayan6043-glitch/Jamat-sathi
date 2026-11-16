@@ -11,6 +11,15 @@ public class SpeechAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String message = intent.getStringExtra("message");
+        long scheduledAt = intent.getLongExtra("scheduled_at", 0);
+long receivedAt = System.currentTimeMillis();
+
+android.util.Log.i(
+    "JAMAT_SATHI",
+    "ALARM_TIMING: scheduled=" + scheduledAt +
+    ", received=" + receivedAt +
+    ", delay_ms=" + (receivedAt - scheduledAt)
+);
 
         if (message == null || message.trim().isEmpty()) {
             return;
