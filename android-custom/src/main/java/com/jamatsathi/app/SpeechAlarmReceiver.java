@@ -31,6 +31,7 @@ android.util.Log.i(
         );
 
         serviceIntent.putExtra("message", message);
+        serviceIntent.putExtra("scheduled_at", scheduledAt);
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
