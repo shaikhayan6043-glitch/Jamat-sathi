@@ -117,7 +117,34 @@ public class PrayerSpeechPlugin extends Plugin {
             call.reject("Text-to-Speech सेटिंग नहीं खुली।", error);
         }
     }
-    
+        @PluginMethod
+    public void checkHindiVoice(PluginCall call) {
+        final TextToSpeech[] holder = new TextToSpeech[1];
+
+        holder[0] = new TextToSpeech(
+            getContext(),
+            status -> {
+                TextToSpeech tts = holder[0];
+                boolean available = false;
+
+                if (status == TextToSpeech.SUCCESS && tts != null) {
+                    int result = tts.setLanguage(new Locale("hi", "IN"));
+
+                    available =
+                        result != TextToSpeech.LANG_MISSING_DATA &&
+                        result != TextToSpeech.LANG_NOT_SUPPORTED;
+                }
+
+                if (tts != null) {
+                    tts.shutdown();
+                }
+
+                JSObject response = new JSObject();
+                response.put("available", available);
+                call.resolve(response);
+            }
+        );
+    }
         @PluginMethod
     public void speakAnnouncement(PluginCall call) {
         String title = call.getString("title", "");
