@@ -2966,6 +2966,7 @@ async function savePrayerAlertSettings() {
 }
 }
 
+
 async function showNotificationWelcome() {
   if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
 
@@ -2977,7 +2978,8 @@ async function showNotificationWelcome() {
 
     if (
       !plugin ||
-      !window.PrayerSpeech?.checkBatteryOptimization
+      !window.PrayerSpeech?.checkBatteryOptimization ||
+      !window.PrayerSpeech?.checkHindiVoice
     ) {
       modal.style.display = "flex";
       return;
@@ -2986,11 +2988,13 @@ async function showNotificationWelcome() {
     const permission = await plugin.checkPermissions();
     const exact = await plugin.checkExactNotificationSetting();
     const battery = await window.PrayerSpeech.checkBatteryOptimization();
+    const voice = await window.PrayerSpeech.checkHindiVoice();
 
     if (
       permission.display !== "granted" ||
       exact.exact_alarm !== "granted" ||
-      battery.allowed !== true
+      battery.allowed !== true ||
+      voice.available !== true
     ) {
       modal.style.display = "flex";
     } else {
@@ -3001,7 +3005,7 @@ async function showNotificationWelcome() {
     modal.style.display = "flex";
   }
 }
-
+  
 async function enableNotificationsFromWelcome() {
   try {
     const plugin = window.LocalNotifications;
