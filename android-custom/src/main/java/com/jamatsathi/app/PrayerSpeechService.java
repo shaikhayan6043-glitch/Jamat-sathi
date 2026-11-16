@@ -112,11 +112,17 @@ private void releaseSpeechWakeLock() {
                     new UtteranceProgressListener() {
 
                         @Override
-                        public void onStart(String utteranceId) {
+                       public void onStart(String utteranceId) {
+    long scheduledAt = intent.getLongExtra("scheduled_at", 0);
+    long startedAt = System.currentTimeMillis();
+
     android.util.Log.i(
         "JAMAT_SATHI",
-        "TTS_STARTED: " + System.currentTimeMillis()
+        "TTS_TIMING: scheduled=" + scheduledAt +
+        ", started=" + startedAt +
+        ", delay_ms=" + (scheduledAt > 0 ? startedAt - scheduledAt : -1)
     );
+                       }
                         }
 
                         @Override
