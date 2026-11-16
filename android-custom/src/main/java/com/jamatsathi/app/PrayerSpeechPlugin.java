@@ -117,34 +117,47 @@ public class PrayerSpeechPlugin extends Plugin {
             call.reject("Text-to-Speech सेटिंग नहीं खुली।", error);
         }
     }
-        @PluginMethod
+ 
+    @PluginMethod
     public void checkHindiVoice(PluginCall call) {
         final TextToSpeech[] holder = new TextToSpeech[1];
 
-        holder[0] = new TextToSpeech(
-            getContext(),
-            status -> {
-                TextToSpeech tts = holder[0];
-                boolean available = false;
+        try {
+            holder[0] = new TextToSpeech(
+                getContext(),
+                status -> {
+                    TextToSpeech tts = holder[0];
+                    boolean available = false;
 
-                if (status == TextToSpeech.SUCCESS && tts != null) {
-                    int result = tts.setLanguage(new Locale("hi", "IN"));
+                    try {
+                        if (status == TextToSpeech.SUCCESS && tts != null) {
+                            int result = tts.setLanguage(
+                                new Locale("hi", "IN")
+                            );
 
-                    available =
-                        result != TextToSpeech.LANG_MISSING_DATA &&
-                        result != TextToSpeech.LANG_NOT_SUPPORTED;
+                            available =
+                                result != TextToSpeech.LANG_MISSING_DATA &&
+                                result != TextToSpeech.LANG_NOT_SUPPORTED;
+                        }
+
+                        JSObject response = new JSObject();
+                        response.put("available", available);
+                        call.resolve(response);
+
+                    } catch (Exception error) {
+                        call.reject("Hindi Voice जाँच नहीं हो सकी।", error);
+                    } finally {
+                        if (tts != null) {
+                            tts.shutdown();
+                        }
+                    }
                 }
-
-                if (tts != null) {
-                    tts.shutdown();
-                }
-
-                JSObject response = new JSObject();
-                response.put("available", available);
-                call.resolve(response);
-            }
-        );
+            );
+        } catch (Exception error) {
+            call.reject("Text-to-Speech शुरू नहीं हो सका।", error);
+        }
     }
+    
         @PluginMethod
     public void speakAnnouncement(PluginCall call) {
         String title = call.getString("title", "");
