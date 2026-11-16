@@ -726,7 +726,7 @@ document.addEventListener("visibilitychange", async function() {
     const battery = await window.PrayerSpeech.checkBatteryOptimization();
 
     if (battery.allowed === true) {
-      alert("Android Battery Optimization की अनुमति मिल गई। अब नमाज़ अलर्ट चालू करें। OPPO में Allow background activity भी ON रखें।");
+      alert("Android Battery Optimization की अनुमति मिल गई। अब OPPO फोन में App Info > Battery Usage में जाकर Allow background activity और Auto launch को भी ON करें। इन दोनों विकल्पों को ऐप अपने आप जाँच नहीं सकता।");
     } else {
       alert("Battery Optimization अभी ON नहीं हुई है। कृपया सेटिंग में जाकर इसे चालू करें।");
     }
