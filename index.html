@@ -736,6 +736,7 @@ document.addEventListener("visibilitychange", async function() {
   }
 });
 
+
 async function openTextToSpeechSettings() {
   try {
     document.getElementById("settingsMenu").style.display = "none";
@@ -745,15 +746,52 @@ async function openTextToSpeechSettings() {
       return;
     }
 
+    let appWentToSettings = false;
+
+    const checkVoiceOnReturn = async () => {
+      if (document.visibilityState === "hidden") {
+        appWentToSettings = true;
+        return;
+      }
+
+      if (!appWentToSettings) return;
+
+      document.removeEventListener(
+        "visibilitychange",
+        checkVoiceOnReturn
+      );
+
+      try {
+        const voice = await window.PrayerSpeech.checkHindiVoice();
+
+        if (voice.available !== true) {
+          alert("Hindi Voice अभी उपलब्ध नहीं है। कृपया हिंदी Voice डाउनलोड करें।");
+          document.getElementById("notificationWelcome").style.display = "flex";
+          return;
+        }
+
+        await showNotificationWelcome();
+
+        alert("Hindi Voice उपलब्ध है।");
+      } catch (error) {
+        console.error(error);
+        alert("Hindi Voice की दोबारा जाँच नहीं हो सकी।");
+      }
+    };
+
+    document.addEventListener(
+      "visibilitychange",
+      checkVoiceOnReturn
+    );
+
     await window.PrayerSpeech.openTextToSpeechSettings();
+
   } catch (error) {
     console.error(error);
     alert("हिंदी आवाज़ की सेटिंग नहीं खुल सकी।");
   }
 }
-    function closePrayerAlertSettings() {
-  document.getElementById("prayerAlertSection").style.display = "none";
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  
     }
 
 const translations = {
